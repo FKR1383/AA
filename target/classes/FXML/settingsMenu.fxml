@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menu.SettingsMenu"
+            stylesheets="@../CSS/commonStyles.css"
+            styleClass="Background"
+            prefHeight="800.0" prefWidth="450.0">
+    <center>
+        <VBox alignment="CENTER" spacing="80">
+            <Label fx:id="difficultyLevel" />
+            <Button text="level 1" fx:id="level1Button"/>
+            <Button text="level 2" fx:id="level2Button"/>
+            <Button text="level 3" fx:id="level3Button"/>
+        </VBox>
+    </center>
+</BorderPane>

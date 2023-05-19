@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menu.LoginMenu"
+            stylesheets="@../CSS/commonStyles.css"
+            styleClass="Background"
+            prefHeight="800.0" prefWidth="450.0">
+    <center>
+        <VBox alignment="CENTER" spacing="40">
+            <HBox alignment="CENTER" spacing="40">
+                <Label text="Username" />
+                <TextField promptText="username" fx:id="usernameField" />
+            </HBox>
+            <HBox alignment="CENTER" spacing="40">
+                <Label text="Password" />
+                <PasswordField promptText="password" fx:id="passwordField" />
+            </HBox>
+            <Button text="Login" onMouseClicked="#login"/>
+            <Hyperlink text="Don't have an account? Create a new one" onMouseClicked="#goToRegister"/>
+            <Hyperlink text="Play as a guest" onMouseClicked="#playAsGuest"/>
+        </VBox>
+    </center>
+</BorderPane>

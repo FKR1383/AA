@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.menu.ScoreboardMenu"
+            stylesheets="@../CSS/commonStyles.css"
+            styleClass="Background"
+            prefHeight="800.0" prefWidth="450.0">
+    <center>
+        <VBox alignment="CENTER" styleClass="ranksLabel">
+            <Label text="Scoreboard" style="-fx-text-fill: Red"/>
+            <Label fx:id="rank1" text="" style="-fx-text-fill: Gold"/>
+            <Label fx:id="rank2" text="" style="-fx-text-fill: Silver"/>
+            <Label fx:id="rank3" text="" style="-fx-text-fill: DarkGoldenRod"/>
+            <Label fx:id="rank4" text=""/>
+            <Label fx:id="rank5" text=""/>
+            <Label fx:id="rank6" text=""/>
+            <Label fx:id="rank7" text=""/>
+            <Label fx:id="rank8" text=""/>
+            <Label fx:id="rank9" text=""/>
+            <Label fx:id="rank10" text=""/>
+        </VBox>
+    </center>
+
+</BorderPane>
