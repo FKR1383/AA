@@ -22,6 +22,7 @@ import javafx.util.Duration;
 import model.Game.*;
 import model.User;
 import view.Animation.ChangeSizeOfBallsAnimation;
+import view.Animation.FadeOfBallsAnimation;
 import view.Paths;
 import view.menu.GameMenu;
 import view.menu.LoginMenu;
@@ -315,6 +316,17 @@ public class GameController {
             GameController.runPhase2();
             GameController.bigAndSmallBalls(1);
         }
+        if (!isPhase3 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
+            >= 0.5) {
+            isPhase3 = true;
+            GameController.runPhase3();
+        }
+    }
+
+    private static void runPhase3() {
+        ((Text)(game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size()-1))).setText("3");
+        new FadeOfBallsAnimation(-1);
     }
 
     public static void showWin() {

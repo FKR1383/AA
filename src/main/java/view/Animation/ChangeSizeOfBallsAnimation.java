@@ -33,19 +33,13 @@ public class ChangeSizeOfBallsAnimation extends Transition {
     protected void interpolate(double v) {
         double radius = 0;
         for (Object o : diskWithBalls.getChildren()) {
-            if (o instanceof StackPane) {
-                radius = ((Ball)(((StackPane)o).getChildren().get(0))).getRadius();
-                ((Ball)(((StackPane)o).getChildren().get(0))).setRadius(radius + percent*0.1);
-            } else if (o instanceof Ball) {
+             if (o instanceof Ball) {
                 radius = ((Ball)o).getRadius();
                 ((Ball)o).setRadius(radius + percent*0.1);
             }
         }
         for (Object o : GameController.getGame().getBalls()) {
-            if (o instanceof StackPane) {
-                radius = ((Ball)(((StackPane)o).getChildren().get(0))).getRadius();
-                ((Ball)(((StackPane)o).getChildren().get(0))).setRadius(radius + percent*0.1);
-            } else if (o instanceof Ball) {
+            if (o instanceof Ball) {
                 radius = ((Ball)o).getRadius();
                 ((Ball)o).setRadius(radius + percent*0.1);
             }
