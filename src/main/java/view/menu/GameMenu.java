@@ -136,6 +136,12 @@ public class GameMenu extends Application {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                        } else if (keyEvent.getCode().getName().equals("Left")) {
+                            if (GameController.isPhase4)
+                                GameController.moveLeft();
+                        } else if (keyEvent.getCode().getName().equals("Right")) {
+                            if (GameController.isPhase4)
+                                GameController.moveRight();
                         }
                     }
                 });
@@ -143,9 +149,13 @@ public class GameMenu extends Application {
                 iceShowerHbox.setTranslateX(20);
                 Text text = new Text(20 , 5,"ice progress : " );
                 ProgressBar progressBar = new ProgressBar(0);
+                Text degreeLabelText = new Text(50 , 5 , "degree : ");
+                Text degreeText = new Text(55 , 5 ,"0");
                 progressBarField = progressBar;
                 iceShowerHbox.getChildren().add(text);
                 iceShowerHbox.getChildren().add(progressBar);
+                iceShowerHbox.getChildren().add(degreeLabelText);
+                iceShowerHbox.getChildren().add(degreeText);
                 gamePane.getChildren().add(iceShowerHbox);
             }
         });

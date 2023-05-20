@@ -52,6 +52,7 @@ public class GameController {
     private static int timeOfRotation;
     private static boolean isPhase2 = false;
     private static boolean isPhase3 = false;
+    public static boolean isPhase4 = false;
 
     public static void setDifficulty(int difficulty) {
         GameController.difficulty = difficulty;
@@ -321,6 +322,16 @@ public class GameController {
             isPhase3 = true;
             GameController.runPhase3();
         }
+        if (!isPhase4 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
+            >= 0.75) {
+            isPhase4 = true;
+            GameController.runPhase4();
+        }
+
+    }
+
+    private static void runPhase4() {
+
     }
 
     private static void runPhase3() {
@@ -505,5 +516,23 @@ public class GameController {
             GameController.showWin();
         else
             GameController.showLose();
+    }
+
+    public static void moveRight() {
+        for (int i = 0; i != GameController.game.getBalls().size(); i++) {
+            GameController.getGame().getBalls().get(i).setTranslateX(
+                    GameController.getGame().getBalls().get(i).getTranslateX()+5);
+            GameController.getGame().getBalls().get(i).getText().setTranslateX(
+                    GameController.getGame().getBalls().get(i).getText().getTranslateX()+5);
+        }
+    }
+
+    public static void moveLeft() {
+        for (int i = 0; i != GameController.game.getBalls().size(); i++) {
+            GameController.getGame().getBalls().get(i).setTranslateX(
+                    GameController.getGame().getBalls().get(i).getTranslateX()-5);
+            GameController.getGame().getBalls().get(i).getText().setTranslateX(
+                    GameController.getGame().getBalls().get(i).getText().getTranslateX()-5);
+        }
     }
 }

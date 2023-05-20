@@ -37,9 +37,9 @@ public class FadeOfBallsAnimation extends Transition {
         double opacity = state > 0 ? v : 1-v;
         for (Object o : GameController.getGame().getDiskWithNumber().getChildren()) {
             if (o instanceof Ball) {
-                ((Ball)o).setOpacity(v);
+                ((Ball)o).setOpacity(opacity);
                 if (((Ball) o).getText() != null)
-                    ((Ball)o).getText().setOpacity(v);
+                    ((Ball)o).getText().setOpacity(opacity);
             }
             if (o instanceof Rod) {
                 ((Rod)o).setOpacity(opacity);
@@ -47,9 +47,9 @@ public class FadeOfBallsAnimation extends Transition {
         }
         for (Object o : GameController.getGame().getBalls()) {
             if (o instanceof Ball) {
-                ((Ball)o).setOpacity(v);
+                ((Ball)o).setOpacity(opacity);
                 if (((Ball) o).getText() != null)
-                    ((Ball)o).getText().setOpacity(v);
+                    ((Ball)o).getText().setOpacity(opacity);
             }
         }
     }
