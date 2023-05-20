@@ -41,6 +41,7 @@ public class GameMenu extends Application {
     public static Button map1Button;
     public static Button map2Button;
     public static Button map3Button;
+    public static Text degreeText;
     public static Scene scene;
     public static ProgressBar progressBarField;
 
@@ -125,7 +126,8 @@ public class GameMenu extends Application {
                 gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
                     @Override
                     public void handle(KeyEvent keyEvent) {
-                        if (keyEvent.getCode().getName().equals("Space")) {
+                        if (keyEvent.getCode().getName().equals("Space") &&
+                                !GameController.getGame().isEnd()) {
                             GameController.shoot();
                         } else if (keyEvent.getCode().getName().equals("Tab")) {
                             try {
@@ -150,12 +152,13 @@ public class GameMenu extends Application {
                 Text text = new Text(20 , 5,"ice progress : " );
                 ProgressBar progressBar = new ProgressBar(0);
                 Text degreeLabelText = new Text(50 , 5 , "degree : ");
-                Text degreeText = new Text(55 , 5 ,"0");
+                Text degreeT = new Text(55 , 5 ,"0");
+                degreeText = degreeT;
                 progressBarField = progressBar;
                 iceShowerHbox.getChildren().add(text);
                 iceShowerHbox.getChildren().add(progressBar);
                 iceShowerHbox.getChildren().add(degreeLabelText);
-                iceShowerHbox.getChildren().add(degreeText);
+                iceShowerHbox.getChildren().add(degreeT);
                 gamePane.getChildren().add(iceShowerHbox);
             }
         });
@@ -171,7 +174,6 @@ public class GameMenu extends Application {
 
     @FXML
     public void initialize() {
-
 
     }
 

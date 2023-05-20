@@ -22,6 +22,7 @@ import javafx.util.Duration;
 import model.Game.*;
 import model.User;
 import view.Animation.ChangeSizeOfBallsAnimation;
+import view.Animation.DegreeTextAnimation;
 import view.Animation.FadeOfBallsAnimation;
 import view.Paths;
 import view.menu.GameMenu;
@@ -265,20 +266,22 @@ public class GameController {
         return balls;
     }
 
-    private static void ballGoingToUp(Ball ball) {
-        ball.setTranslateY(ball.getTranslateY() - 50);
-        ball.getText().setTranslateY(ball.getText().getTranslateY()-50);
-    }
-
-    public static void shoot() {
-        long milliSeconds = 0;
-        Ball firstBall = GameController.getGame().getBalls().get(0);
-        Iterator itr = GameController.getGame().getBalls().iterator();
-        milliSeconds = System.currentTimeMillis() - time;
-        while (itr.hasNext()) {
-            Ball ball = (Ball) itr.next();
-            ballGoingToUp(ball);
+    private static void ballGoingToUp(Ball ball , Ball firstBall) {
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(50) , ball);
+        translateTransition.setByY(-50);
+        TranslateTransition translateTransition2 = new TranslateTransition
+                (Duration.millis(50) , ball.getText());
+        translateTransition2.setByY(-50);
+        translateTransition.setCycleCount(1);
+        translateTransition2.setCycleCount(1);
+        translateTransition2.play();
+        translateTransition.play();
+        translateTransition.setOnFinished(e -> {
+            translateTransition2.stop();
+            translateTransition.stop();
             if (ball.equals(firstBall)) {
+                long milliSeconds = 0;
+                milliSeconds = System.currentTimeMillis() - time;
                 Rod rod = new Rod();
                 double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
                 firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
@@ -303,6 +306,18 @@ public class GameController {
                 game.getDiskWithNumber().getChildren().add(firstBall.getText());
                 game.getDiskWithNumber().getChildren().add(disk);
                 game.getDiskWithNumber().getChildren().add(text);
+            }
+        });
+
+    }
+
+    public static void shoot() {
+        Ball firstBall = GameController.getGame().getBalls().get(0);
+        Iterator itr = GameController.getGame().getBalls().iterator();
+        while (itr.hasNext()) {
+            Ball ball = (Ball) itr.next();
+            ballGoingToUp(ball ,firstBall);
+            if (ball.equals(firstBall)) {
                 itr.remove();
             }
         }
@@ -331,7 +346,12 @@ public class GameController {
     }
 
     private static void runPhase4() {
+        degreeText.setText("-15.00");
+        GameController.changingDegree();
+    }
 
+    private static void changingDegree() {
+        new DegreeTextAnimation(1);
     }
 
     private static void runPhase3() {
