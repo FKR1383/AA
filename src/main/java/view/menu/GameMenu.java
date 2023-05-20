@@ -128,7 +128,11 @@ public class GameMenu extends Application {
                     public void handle(KeyEvent keyEvent) {
                         if (keyEvent.getCode().getName().equals("Space") &&
                                 !GameController.getGame().isEnd()) {
-                            GameController.shoot();
+                            if (!GameController.isPhase4) {
+                                GameController.shoot();
+                            } else {
+                                GameController.shoot2();
+                            }
                         } else if (keyEvent.getCode().getName().equals("Tab")) {
                             try {
                                 if (GameMenu.progressBarField.getProgress() >= 0.95) {

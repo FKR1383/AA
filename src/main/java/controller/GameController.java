@@ -22,8 +22,8 @@ import javafx.util.Duration;
 import model.Game.*;
 import model.User;
 import view.Animation.ChangeSizeOfBallsAnimation;
-import view.Animation.DegreeTextAnimation;
 import view.Animation.FadeOfBallsAnimation;
+import view.Animation.MoveOfFirstBallInWindAnimation;
 import view.Paths;
 import view.menu.GameMenu;
 import view.menu.LoginMenu;
@@ -103,6 +103,7 @@ public class GameController {
         timeOfRotation = 15000/rotatingByDifficulty();
         isPhase2 = false;
         isPhase3 = false;
+        isPhase4 = false;
         time = System.currentTimeMillis();
         signOfRotation = 1;
         game.setOuterDisk((OuterDisk) game.getDiskWithNumber().getChildren().get(0)); // outerDisk is first
@@ -267,10 +268,10 @@ public class GameController {
     }
 
     private static void ballGoingToUp(Ball ball , Ball firstBall) {
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(50) , ball);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100) , ball);
         translateTransition.setByY(-50);
         TranslateTransition translateTransition2 = new TranslateTransition
-                (Duration.millis(50) , ball.getText());
+                (Duration.millis(100) , ball.getText());
         translateTransition2.setByY(-50);
         translateTransition.setCycleCount(1);
         translateTransition2.setCycleCount(1);
@@ -306,6 +307,10 @@ public class GameController {
                 game.getDiskWithNumber().getChildren().add(firstBall.getText());
                 game.getDiskWithNumber().getChildren().add(disk);
                 game.getDiskWithNumber().getChildren().add(text);
+                checkCollide();
+                if (game.isEnd()) {
+                    GameController.showState();
+                }
             }
         });
 
@@ -321,24 +326,20 @@ public class GameController {
                 itr.remove();
             }
         }
-        checkCollide();
-        if (game.isEnd()) {
-            GameController.showState();
-        }
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
         if (!isPhase2 && (double)(game.getNumberOfBalls()-game.getBalls().size()) / game.getNumberOfBalls()
-                >= 0.25) {
+                >= 0.24) {
             System.out.println("run");
             GameController.runPhase2();
             GameController.bigAndSmallBalls(1);
         }
         if (!isPhase3 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
-            >= 0.5) {
+            >= 0.49) {
             isPhase3 = true;
             GameController.runPhase3();
         }
         if (!isPhase4 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
-            >= 0.75) {
+            >= 0.74) {
             isPhase4 = true;
             GameController.runPhase4();
         }
@@ -346,12 +347,23 @@ public class GameController {
     }
 
     private static void runPhase4() {
-        degreeText.setText("-15.00");
+        ((Text)(game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size()-1))).setText("4");
         GameController.changingDegree();
     }
 
     private static void changingDegree() {
-        new DegreeTextAnimation(1);
+        RotateTransition degreeChanging = new RotateTransition(Duration.millis(5000)
+        , GameController.getGame().getOuterDisk());
+        degreeChanging.setCycleCount(1);
+        degreeChanging.play();
+        degreeChanging.setOnFinished(e -> {
+            Random random = new Random();
+            int degree = (Math.abs(random.nextInt()) % 31) - 15;
+            System.out.println("do that");
+            degreeText.setText(String.format("%d" , degree));
+            changingDegree();
+        });
     }
 
     private static void runPhase3() {
@@ -361,7 +373,7 @@ public class GameController {
     }
 
     public static void showWin() {
-        rotateTransition.stop();
+        //rotateTransition.stop();
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Win");
         GameController.distributionOfScore();
@@ -452,7 +464,7 @@ public class GameController {
     }
 
     public static void showLose() {
-        rotateTransition.stop();
+        //rotateTransition.stop();
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Lose");
         GameController.distributionOfScore();
@@ -480,6 +492,11 @@ public class GameController {
                                      double cy2 , double radius) {
         double distance = Math.sqrt(Math.pow(cx1-cx2,2)+Math.pow(cy1-cy2 , 2));
         return distance <= 2*radius;
+    }
+    public static boolean isCollide(double cx1 , double cy1 , double cx2 ,
+                                     double cy2 , double radius , double radius2) {
+        double distance = Math.sqrt(Math.pow(cx1-cx2,2)+Math.pow(cy1-cy2 , 2));
+        return distance <= radius + radius2;
     }
 
     public static boolean isIsIceMode() {
@@ -532,6 +549,7 @@ public class GameController {
     }
 
     public static void showState() {
+        rotateTransition.stop();
         if (game.isWin())
             GameController.showWin();
         else
@@ -540,19 +558,57 @@ public class GameController {
 
     public static void moveRight() {
         for (int i = 0; i != GameController.game.getBalls().size(); i++) {
-            GameController.getGame().getBalls().get(i).setTranslateX(
-                    GameController.getGame().getBalls().get(i).getTranslateX()+5);
-            GameController.getGame().getBalls().get(i).getText().setTranslateX(
-                    GameController.getGame().getBalls().get(i).getText().getTranslateX()+5);
+            if (GameController.getGame().getBalls().get(i).getTranslateX() <= 425) {
+                GameController.getGame().getBalls().get(i).setTranslateX(
+                        GameController.getGame().getBalls().get(i).getTranslateX() + 5);
+                GameController.getGame().getBalls().get(i).getText().setTranslateX(
+                        GameController.getGame().getBalls().get(i).getText().getTranslateX() + 5);
+            }
         }
     }
 
     public static void moveLeft() {
         for (int i = 0; i != GameController.game.getBalls().size(); i++) {
-            GameController.getGame().getBalls().get(i).setTranslateX(
-                    GameController.getGame().getBalls().get(i).getTranslateX()-5);
-            GameController.getGame().getBalls().get(i).getText().setTranslateX(
-                    GameController.getGame().getBalls().get(i).getText().getTranslateX()-5);
+            if (GameController.getGame().getBalls().get(i).getTranslateX() >= 25) {
+                GameController.getGame().getBalls().get(i).setTranslateX(
+                        GameController.getGame().getBalls().get(i).getTranslateX() - 5);
+                GameController.getGame().getBalls().get(i).getText().setTranslateX(
+                        GameController.getGame().getBalls().get(i).getText().getTranslateX() - 5);
+            }
+        }
+    }
+
+    public static void shoot2() {
+        Ball firstBall = GameController.getGame().getBalls().get(0);
+        Iterator itr = GameController.getGame().getBalls().iterator();
+        while (itr.hasNext()) {
+            Ball ball = (Ball) itr.next();
+            ballGoingToUp2(ball ,firstBall);
+            if (ball.equals(firstBall)) {
+                itr.remove();
+            }
+        }
+        progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+
+    }
+
+    private static void ballGoingToUp2(Ball ball, Ball firstBall) {
+        if (ball.equals(firstBall)) {
+            new MoveOfFirstBallInWindAnimation(ball , Integer.parseInt(degreeText.getText()));
+        } else {
+            TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), ball);
+            translateTransition.setByY(-50);
+            TranslateTransition translateTransition2 = new TranslateTransition
+                    (Duration.millis(100), ball.getText());
+            translateTransition2.setByY(-50);
+            translateTransition.setCycleCount(1);
+            translateTransition2.setCycleCount(1);
+            translateTransition2.play();
+            translateTransition.play();
+            translateTransition.setOnFinished(e -> {
+                translateTransition2.stop();
+                translateTransition.stop();
+            });
         }
     }
 }
