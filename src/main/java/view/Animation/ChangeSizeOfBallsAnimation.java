@@ -35,11 +35,10 @@ public class ChangeSizeOfBallsAnimation extends Transition {
         this.setCycleDuration(Duration.millis(200));
         this.play();
         this.setOnFinished(e -> {
-            if (!GameController.checkCollide()) {
-                new ChangeSizeOfBallsAnimation(-percent, diskWithBalls);
-            } else {
-                this.stop();
+            if (GameController.checkCollide()) {
                 GameController.showState();
+            } else {
+                new ChangeSizeOfBallsAnimation(-percent, diskWithBalls);
             }
         });
     }

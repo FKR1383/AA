@@ -23,11 +23,28 @@ public class FadeOfBallsAnimation extends Transition {
         this.setCycleDuration(Duration.millis(1000));
         this.play();
         this.setOnFinished(e -> {
-            if (!GameController.checkCollide()) {
-                new FadeOfBallsAnimation(-state);
-            } else {
-                this.stop();
+            if (GameController.checkCollide()) {
+                for (Object o : GameController.getGame().getDiskWithNumber().getChildren()) {
+                    if (o instanceof Ball) {
+                        ((Ball)o).setOpacity(1);
+                        if (((Ball) o).getText() != null)
+                            ((Ball)o).getText().setOpacity(1);
+                    }
+                    if (o instanceof Rod) {
+                        ((Rod)o).setOpacity(1);
+                    }
+                }
+                for (Object o : GameController.getGame().getBalls()) {
+                    if (o instanceof Ball) {
+                        ((Ball)o).setOpacity(1);
+                        if (((Ball) o).getText() != null)
+                            ((Ball)o).getText().setOpacity(1);
+                    }
+                }
                 GameController.showState();
+
+            } else {
+                new FadeOfBallsAnimation(-state);
             }
         });
     }

@@ -45,12 +45,12 @@ public class GameController {
         return difficulty;
     }
 
-    private static Game game;
+    public static Game game;
     private static RotateTransition rotateTransition;
-    private static double nowAngle = 0;
-    private static long time;
+    public static double nowAngle = 0;
+    public static long time;
     private static boolean isIceMode = false;
-    private static int timeOfRotation;
+    public static int timeOfRotation;
     private static boolean isPhase2 = false;
     private static boolean isPhase3 = false;
     public static boolean isPhase4 = false;
@@ -58,7 +58,7 @@ public class GameController {
     public static void setDifficulty(int difficulty) {
         GameController.difficulty = difficulty;
     }
-    private static int signOfRotation = 1;
+    public static int signOfRotation = 1;
     private static boolean isBeingBig = true;
 
     public static ArrayList<User> rankingOfUsers() {
@@ -96,7 +96,14 @@ public class GameController {
         Game game = new Game(difficulty, getColorByNumberOfMap(numberOfMap), createBalls(numberOfBalls)
                 , createDisk(numberOfMap), numberOfBalls, rotatingByDifficulty(),
                 windSpeedByDifficulty(), iceTimerByDifficulty());
+        OuterDisk outerDisk = new OuterDisk();
+        outerDisk.setTranslateX(225);
+        outerDisk.setTranslateY(400);
+        outerDisk.setRadius(200);
         GameController.setGame(game);
+        game.setOuterDisk(outerDisk);
+        outerDisk.setFill(Color.GRAY);
+        outerDisk.setOpacity(0.5);
         nowAngle = 0;
         game.setRotateTransition(rotateTransition);
         isIceMode = false;
@@ -106,8 +113,7 @@ public class GameController {
         isPhase4 = false;
         time = System.currentTimeMillis();
         signOfRotation = 1;
-        game.setOuterDisk((OuterDisk) game.getDiskWithNumber().getChildren().get(0)); // outerDisk is first
-        // children of diskWithNumber
+
     }
 
     private static double windSpeedByDifficulty() {
@@ -173,9 +179,7 @@ public class GameController {
 
     private static StackPane createDisk(int numberOfMap) {
         Disk disk = new Disk();
-        OuterDisk outerDisk = new OuterDisk();
         disk.setRadius(80);
-        outerDisk.setRadius(200);
         Text text = new Text("1");
         text.setScaleX(5);
         text.setScaleY(5);
@@ -233,13 +237,13 @@ public class GameController {
         rod6.setScaleY(200);
         rod6.setRotate(120);
         Color color = Color.rgb(225, 0, 0);
-        outerDisk.setFill(Color.GRAY);
+
         disk.setFill(color);
-        outerDisk.setOpacity(0.5);
-        StackPane stackPane = new StackPane(outerDisk, ball, rod, ball2, rod2, rod3, ball3,
+
+        StackPane stackPane = new StackPane(ball, rod, ball2, rod2, rod3, ball3,
                 rod4, ball4, rod5, ball5, rod6, ball6, disk, text);
-        stackPane.setLayoutX(25);
-        stackPane.setLayoutY(200);
+        stackPane.setTranslateX(145);
+        stackPane.setTranslateY(320);
         RotateTransition rt = new RotateTransition(Duration.millis
                 (15000 / GameController.rotatingByDifficulty()), stackPane);
         timeOfRotation = 15000 / GameController.rotatingByDifficulty();
@@ -353,11 +357,16 @@ public class GameController {
     }
 
     private static void changingDegree() {
+        if (!isPhase4)
+            return;
         RotateTransition degreeChanging = new RotateTransition(Duration.millis(5000)
         , GameController.getGame().getOuterDisk());
         degreeChanging.setCycleCount(1);
         degreeChanging.play();
         degreeChanging.setOnFinished(e -> {
+            if (game.isEnd()) {
+                return;
+            }
             Random random = new Random();
             int degree = (Math.abs(random.nextInt()) % 31) - 15;
             System.out.println("do that");
@@ -550,6 +559,7 @@ public class GameController {
 
     public static void showState() {
         rotateTransition.stop();
+
         if (game.isWin())
             GameController.showWin();
         else
@@ -589,7 +599,10 @@ public class GameController {
             }
         }
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-
+        checkCollide();
+        if (game.isEnd()) {
+            GameController.showState();
+        }
     }
 
     private static void ballGoingToUp2(Ball ball, Ball firstBall) {

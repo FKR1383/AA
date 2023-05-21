@@ -109,15 +109,16 @@ public class GameMenu extends Application {
             public void handle(MouseEvent mouseEvent) {
                 GameController.createGame(numberOfMap , Integer.parseInt(ballsText.getText()));
                 gamePane.getChildren().clear();
+                gamePane.getChildren().add(GameController.getGame().getOuterDisk());
                 gamePane.getChildren().add(GameController.getGame().getDiskWithNumber());
                 int startY = 650;
                 for (int i = 0; i != GameController.getGame().getBalls().size(); i++) {
                     Ball ball = (Ball)(GameController.getGame().getBalls().get(i));
                     Ball stackBall = GameController.getGame().getBalls().get(i);
                     stackBall.setTranslateX(215);
-                    stackBall.setLayoutY(startY);
+                    stackBall.setTranslateY(startY);
                     stackBall.getText().setTranslateX(208);
-                    stackBall.getText().setLayoutY(startY+3);
+                    stackBall.getText().setTranslateY(startY+3);
                     startY += 50;
                     gamePane.getChildren().add(GameController.getGame().getBalls().get(i));
                     gamePane.getChildren().add(GameController.getGame().getBalls().get(i).getText());
@@ -163,6 +164,7 @@ public class GameMenu extends Application {
                 iceShowerHbox.getChildren().add(progressBar);
                 iceShowerHbox.getChildren().add(degreeLabelText);
                 iceShowerHbox.getChildren().add(degreeT);
+                degreeT.setText("0");
                 gamePane.getChildren().add(iceShowerHbox);
             }
         });
