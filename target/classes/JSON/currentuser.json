@@ -1,15 +1,15 @@
 {
-  "username": "123",
-  "password": "123",
-  "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/5.png",
+  "username": "admin",
+  "password": "admin00",
+  "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/7.png",
   "scoreOfDiff": [
     0,
-    0,
+    2,
     0
   ],
   "lastGames": [
-    "2023-05-21 19:24:50",
-    "2023-05-21 19:24:50",
-    "2023-05-21 19:24:50"
+    "2023-05-21 20:10:35",
+    "2023-05-21 20:10:48",
+    "2023-05-21 20:10:35"
   ]
 }

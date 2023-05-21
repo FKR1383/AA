@@ -82,7 +82,7 @@ public class User implements Comparable<User>{
 
     public LocalDateTime getLastGameWithDiff(int difficultyLevel) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime lastGameInDate  = LocalDateTime.parse(lastGames[0], formatter);
+        LocalDateTime lastGameInDate  = LocalDateTime.parse(lastGames[difficultyLevel], formatter);
         return  lastGameInDate;
     }
 
@@ -136,6 +136,13 @@ public class User implements Comparable<User>{
         this.scoreOfDiff = scoreOfDiff;
     }
 
+    public String[] getLastGames() {
+        return lastGames;
+    }
+
+    public void setLastGames(String[] lastGames) {
+        this.lastGames = lastGames;
+    }
     /*public Game getGame() {
         return game;
     }

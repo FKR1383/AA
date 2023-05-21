@@ -7,12 +7,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.User;
 import view.Paths;
 
 import java.net.URL;
+import java.security.interfaces.EdECKey;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +42,10 @@ public class ScoreboardMenu extends Application {
     }
 
     public void initialize() {
+        showRanking();
+    }
+
+    private void showRanking() {
         HashMap <Integer , Label> labels = new HashMap<>();
         pushingLabelsToHashMap(labels);
         ArrayList<User> rankedUsers = GameController.rankingOfUsers();
@@ -66,5 +72,33 @@ public class ScoreboardMenu extends Application {
         labels.put(8 , rank8);
         labels.put(9 , rank9);
         labels.put(10 , rank10);
+    }
+
+    public void changeRankingToDiff1(MouseEvent mouseEvent) {
+        User.setNowDiff(0);
+        showRanking();
+    }
+
+    public void changeRankingToDiff2(MouseEvent mouseEvent) {
+        User.setNowDiff(1);
+        showRanking();
+    }
+
+    public void changeRankingToDiff3(MouseEvent mouseEvent) {
+        User.setNowDiff(2);
+        showRanking();
+    }
+
+    public void changeRankingToAllDiffs(MouseEvent mouseEvent) {
+        User.setNowDiff(-1);
+        showRanking();
+    }
+
+    public void back(MouseEvent mouseEvent) {
+        try {
+            new MainMenu().start(LoginMenu.stageOfProgram);
+        } catch (Exception e) {
+            System.out.println("an error occurred");
+        }
     }
 }

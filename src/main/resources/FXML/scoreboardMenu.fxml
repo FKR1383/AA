@@ -13,7 +13,13 @@
             styleClass="Background"
             prefHeight="800.0" prefWidth="450.0">
     <center>
-        <VBox alignment="CENTER" styleClass="ranksLabel">
+        <VBox alignment="CENTER" styleClass="ranksLabel" spacing="20">
+            <HBox alignment="CENTER" spacing="5">
+                <Button text="Difficulty 1" onMouseClicked="#changeRankingToDiff1"/>
+                <Button text="Difficulty 2" onMouseClicked="#changeRankingToDiff2"/>
+                <Button text="Difficulty 3" onMouseClicked="#changeRankingToDiff3"/>
+                <Button text="All diffs" onMouseClicked="#changeRankingToAllDiffs"/>
+            </HBox>
             <Label text="Scoreboard" style="-fx-text-fill: Red"/>
             <Label fx:id="rank1" text="" style="-fx-text-fill: Gold"/>
             <Label fx:id="rank2" text="" style="-fx-text-fill: Silver"/>
@@ -25,6 +31,7 @@
             <Label fx:id="rank8" text=""/>
             <Label fx:id="rank9" text=""/>
             <Label fx:id="rank10" text=""/>
+            <Button fx:id="backButton" text="Back" onMouseClicked="#back"/>
         </VBox>
     </center>
 

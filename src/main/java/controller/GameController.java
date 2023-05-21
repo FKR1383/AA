@@ -31,6 +31,7 @@ import view.menu.MainMenu;
 
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.random.RandomGenerator;
@@ -467,6 +468,8 @@ public class GameController {
             int nowScore = user.getScoreOfDiff().get(GameController.getDifficulty() - 1);
             nowScore += game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
             user.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            user.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
             DBController.saveCurrentUser();
             DBController.saveUsers();
         }
