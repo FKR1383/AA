@@ -1,6 +1,7 @@
 package view.menu;
 
 import controller.App;
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -35,18 +36,13 @@ public class RegisterMenu extends Application {
         String password = passwordField.getText();
         if (username == null || username.equals("") || password == null || password.equals("")) {
             Alert emptyFieldAlert = new Alert(Alert.AlertType.ERROR);
-            emptyFieldAlert.setTitle("Invalid register!");
-            emptyFieldAlert.setHeaderText("Register was not successful!");
-            emptyFieldAlert.setContentText("Username or password is empty!");
-            emptyFieldAlert.showAndWait();
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Invalid register!" ,
+                    "Register was not successful!" , "Username or password is empty!");
             return;
         }
         if (UserController.isUsernameExist(username)) {
-            Alert usernameExistsAlert = new Alert(Alert.AlertType.ERROR);
-            usernameExistsAlert.setTitle("Invalid register!");
-            usernameExistsAlert.setHeaderText("Register was not successful!");
-            usernameExistsAlert.setContentText("A user with this username exists!");
-            usernameExistsAlert.showAndWait();
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Invalid register!" ,
+                    "Register was not successful!" , "A user with this username exists!");
             return;
         }
         UserController.setTemporaryUsername(username);

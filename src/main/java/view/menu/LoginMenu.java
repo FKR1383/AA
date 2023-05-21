@@ -2,6 +2,7 @@ package view.menu;
 
 import controller.App;
 import controller.DBController;
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -43,11 +44,8 @@ public class LoginMenu extends Application {
         String username = usernameField.getText();
         String password = passwordField.getText();
         if (username == null || username.equals("") || password == null || password.equals("")) {
-            Alert emptyFieldAlert = new Alert(Alert.AlertType.ERROR);
-            emptyFieldAlert.setTitle("Invalid login!");
-            emptyFieldAlert.setHeaderText("Login was not successful!");
-            emptyFieldAlert.setContentText("Username or password is empty!");
-            emptyFieldAlert.showAndWait();
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Invalid login!" ,
+                    "Login was not successful!" , "Username or password is empty!");
             return;
         }
         boolean isLoginSuccessful = UserController.login(username , password);
@@ -58,11 +56,8 @@ public class LoginMenu extends Application {
                 System.out.println("an error occurred");
             }
         } else {
-            Alert invalidLoginAlert = new Alert(Alert.AlertType.ERROR);
-            invalidLoginAlert.setTitle("Invalid login!");
-            invalidLoginAlert.setHeaderText("Login was not successful!");
-            invalidLoginAlert.setContentText("Username or password is incorrect!");
-            invalidLoginAlert.showAndWait();
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Invalid login!",
+                    "Login was not successful!" , "Username or password is incorrect!");
         }
     }
 

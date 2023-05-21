@@ -3,6 +3,7 @@ package controller;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -105,5 +106,15 @@ public class GameViewController {
         });
         return button;
     }
+
+    public static void alertShowing(Alert.AlertType alertType , String title , String header ,
+                                    String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
 
 }

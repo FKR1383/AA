@@ -1,11 +1,13 @@
 package view.menu;
 
 import controller.App;
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -35,6 +37,8 @@ public class ProfileMenu extends Application {
 
     public void logout(MouseEvent mouseEvent) {
         UserController.logout();
+        GameViewController.alertShowing(Alert.AlertType.INFORMATION , "Logged out!" ,
+                "Logged out!" , "Logged out successfully!");
         try {
             new LoginMenu().start(LoginMenu.stageOfProgram);
         } catch (Exception e) {
@@ -44,6 +48,8 @@ public class ProfileMenu extends Application {
 
     public void deleteAccount(MouseEvent mouseEvent) {
         UserController.deleteUser();
+        GameViewController.alertShowing(Alert.AlertType.INFORMATION , "Delete Account was successful!",
+                "Account was deleted successfully!" , "Account was deleted!");
         try {
             new LoginMenu().start(LoginMenu.stageOfProgram);
         } catch (Exception e) {
@@ -54,32 +60,49 @@ public class ProfileMenu extends Application {
     public void changeUsername(MouseEvent mouseEvent) {
         String newUsername = usernameField.getText();
         if (newUsername == null || newUsername.equals("")) {
-            // TODO: message
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Change information Error" ,
+                    "Empty field" , "New username field is empty!");
             return;
         }
         if (UserController.isUsernameExist(newUsername)) {
-            // TODO: message
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Change information Error" ,
+                    "Username exists!" , "New username exists");
             return;
         }
         UserController.changeUsername(newUsername);
-        // TODO: messsage
+        GameViewController.alertShowing(Alert.AlertType.INFORMATION , "Change information was successful!",
+                "Username was changed!" , "Username was changed successfully!");
+        try {
+            new ProfileMenu().start(LoginMenu.stageOfProgram);
+        } catch (Exception e) {
+            System.out.println("an error occurred");
+        }
     }
 
     public void changePassword(MouseEvent mouseEvent) {
-        // old password giving???
         String newPassword = passwordField.getText();
         String passwordConfirmation = confirmationField.getText();
         if (newPassword == null || passwordConfirmation == null ||
         newPassword.equals("") || passwordConfirmation.equals("")) {
-            // TODO: message
+            GameViewController.alertShowing(Alert.AlertType.ERROR ,"Change information failed!" ,
+                    "Change password was not successful!" ,
+                    "Password field or new password field is empty!");
             return;
         }
         if (!newPassword.equals(passwordConfirmation)) {
-            // TODO: message
+            GameViewController.alertShowing(Alert.AlertType.ERROR ,"Change information failed!",
+                    "Change password was not successful!" ,
+                    "Password confirmation and password doesn't match!");
             return;
         }
         UserController.changePassword(newPassword);
-        // TODO: message
+        GameViewController.alertShowing(Alert.AlertType.INFORMATION , "Change information was successful!",
+                "Password changed successfully!" ,"Password changed successfully!");
+        try {
+            new ProfileMenu().start(LoginMenu.stageOfProgram);
+        } catch (Exception e) {
+            System.out.println("an error occurred");
+        }
     }
 
     public void changeAvatar(MouseEvent mouseEvent) {

@@ -1,0 +1,32 @@
+[
+  {
+    "username": "admin",
+    "password": "123",
+    "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/2.png",
+    "scoreOfDiff": [
+      0,
+      0,
+      0
+    ],
+    "lastGames": [
+      "2023-05-21 17:05:33",
+      "2023-05-21 17:05:33",
+      "2023-05-21 17:05:33"
+    ]
+  },
+  {
+    "username": "farzam",
+    "password": "farzam00",
+    "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/7.png",
+    "scoreOfDiff": [
+      0,
+      0,
+      0
+    ],
+    "lastGames": [
+      "2023-05-21 17:05:58",
+      "2023-05-21 17:05:58",
+      "2023-05-21 17:05:58"
+    ]
+  }
+]

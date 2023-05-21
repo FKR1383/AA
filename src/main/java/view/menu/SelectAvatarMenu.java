@@ -1,5 +1,6 @@
 package view.menu;
 
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -44,7 +45,7 @@ public class SelectAvatarMenu extends Application {
     @FXML
     private Button randomAvatarButton;
     @FXML
-    private static ImageView selectedAvatar;
+    private ImageView selectedAvatar;
 
     public static boolean isIsChangingAvatarMenuActive() {
         return isChangingAvatarMenuActive;
@@ -84,15 +85,15 @@ public class SelectAvatarMenu extends Application {
 
     public void Register(MouseEvent mouseEvent) {
         if (UserController.getTemporaryAvatarAddress() == null) {
-            Alert emptyAvatarAlert = new Alert(Alert.AlertType.ERROR);
-            emptyAvatarAlert.setTitle("Register failed!");
-            emptyAvatarAlert.setHeaderText("Register was not successful!");
-            emptyAvatarAlert.setContentText("You didn't choose any avatar!");
-            emptyAvatarAlert.showAndWait();
+            GameViewController.alertShowing(Alert.AlertType.ERROR , "Register failed!" ,
+                    "Register was not successful!" , "You didn't choose any avatar!");
             return;
         }
         if (isChangingAvatarMenuActive) {
             UserController.changeAvatar();
+            GameViewController.alertShowing(Alert.AlertType.INFORMATION ,
+                    "Change information was successful!",
+                    "Avatar changed successfully!" , "Avatar was changed!");
             try {
                 SelectAvatarMenu.setIsChangingAvatarMenuActive(true);
                 new ProfileMenu().start(LoginMenu.stageOfProgram);
@@ -101,6 +102,8 @@ public class SelectAvatarMenu extends Application {
             }
         } else {
             UserController.createUser();
+            GameViewController.alertShowing(Alert.AlertType.INFORMATION , "User creation was successful!",
+                    "User was created successfully!" , " User was created!");
             try {
                 new MainMenu().start(LoginMenu.stageOfProgram);
             } catch (Exception e) {
@@ -127,7 +130,8 @@ public class SelectAvatarMenu extends Application {
             public void handle(MouseEvent mouseEvent) {
                 String addressBeforeChangeAddress = UserController.getTemporaryAvatarAddress();
                 new FileChoosingMenu().start(LoginMenu.stageOfProgram);
-                if (!addressBeforeChangeAddress.equals(UserController.getTemporaryAvatarAddress())) {
+                if (addressBeforeChangeAddress == null ||
+                        !addressBeforeChangeAddress.equals(UserController.getTemporaryAvatarAddress())) {
                     File fileOfAvatar = new File(UserController.getTemporaryAvatarAddress());
                     try {
                         selectedAvatar.setImage(new Image(fileOfAvatar.toURI().toURL().toExternalForm()));
@@ -146,7 +150,7 @@ public class SelectAvatarMenu extends Application {
         chooseAvatarFromTemplatesEventHandling(avatar7 , 7);
         chooseAvatarFromTemplatesEventHandling(avatar8 , 8);
     }
-    private static void chooseAvatarFromTemplatesEventHandling(ImageView avatar , int number) {
+    private void chooseAvatarFromTemplatesEventHandling(ImageView avatar , int number) {
         avatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

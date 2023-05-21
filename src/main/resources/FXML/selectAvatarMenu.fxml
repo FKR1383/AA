@@ -84,11 +84,11 @@
             </ImageView>
             <HBox alignment="CENTER" spacing="20">
                 <Button text="Back" onMouseClicked="#back" />
-                <Button text="Register" onMouseClicked="#Register" fx:id="registerBottom"/>
+                <Button text="Register" onMouseClicked="#Register" fx:id="registerButton"/>
             </HBox>
             <HBox alignment="CENTER" spacing="20">
                 <Button styleClass="bigButton" text="Choose From File" fx:id="chooseAvatarFromFileButton" />
-                <Button styleClass="bigButton" text="Random Avatar" fx:id="randomButton" />
+                <Button styleClass="bigButton" text="Random Avatar" fx:id="randomAvatarButton" />
             </HBox>
         </VBox>
     </top>
