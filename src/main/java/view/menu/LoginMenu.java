@@ -19,6 +19,10 @@ import java.net.URL;
 
 public class LoginMenu extends Application {
     public static Stage stageOfProgram;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
     public static void main(String[] args) {
         App.run();
         launch(args);
@@ -35,20 +39,15 @@ public class LoginMenu extends Application {
             stage.show();
         }
     }
-
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private PasswordField passwordField;
-
     public void login(MouseEvent mouseEvent) {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        if (username == null || username.equals("") | password == null || password.equals("")) {
+        if (username == null || username.equals("") || password == null || password.equals("")) {
             Alert emptyFieldAlert = new Alert(Alert.AlertType.ERROR);
-            emptyFieldAlert.setTitle("invalid login!");
-            emptyFieldAlert.setHeaderText("login was not successful!");
-            emptyFieldAlert.setContentText("username or password is empty!");
+            emptyFieldAlert.setTitle("Invalid login!");
+            emptyFieldAlert.setHeaderText("Login was not successful!");
+            emptyFieldAlert.setContentText("Username or password is empty!");
+            emptyFieldAlert.showAndWait();
             return;
         }
         boolean isLoginSuccessful = UserController.login(username , password);
@@ -60,9 +59,9 @@ public class LoginMenu extends Application {
             }
         } else {
             Alert invalidLoginAlert = new Alert(Alert.AlertType.ERROR);
-            invalidLoginAlert.setTitle("invalid login!");
-            invalidLoginAlert.setHeaderText("login was not successful!");
-            invalidLoginAlert.setContentText("username or password is incorrect!");
+            invalidLoginAlert.setTitle("Invalid login!");
+            invalidLoginAlert.setHeaderText("Login was not successful!");
+            invalidLoginAlert.setContentText("Username or password is incorrect!");
             invalidLoginAlert.showAndWait();
         }
     }

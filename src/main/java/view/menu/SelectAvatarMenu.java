@@ -10,20 +10,19 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import model.User;
 import view.Paths;
 
 import java.io.File;
 import java.net.URL;
 
 public class SelectAvatarMenu extends Application {
-    private static boolean isChangingMenuActive = false;
+    private static boolean isChangingAvatarMenuActive = false;
+    // isChangingAvatarMenu is for selecting avatar in profile menu after creating account
     @FXML
-    private Button registerBottom;
+    private Button registerButton;
     @FXML
     private ImageView avatar1;
     @FXML
@@ -43,9 +42,17 @@ public class SelectAvatarMenu extends Application {
     @FXML
     private Button chooseAvatarFromFileButton;
     @FXML
-    private Button randomButton;
+    private Button randomAvatarButton;
     @FXML
-    private ImageView selectedAvatar;
+    private static ImageView selectedAvatar;
+
+    public static boolean isIsChangingAvatarMenuActive() {
+        return isChangingAvatarMenuActive;
+    }
+
+    public static void setIsChangingAvatarMenuActive(boolean isChangingAvatarMenuActive) {
+        SelectAvatarMenu.isChangingAvatarMenuActive = isChangingAvatarMenuActive;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -58,9 +65,9 @@ public class SelectAvatarMenu extends Application {
     }
 
     public void back(MouseEvent mouseEvent) {
-        if (isChangingMenuActive) {
+        if (isChangingAvatarMenuActive) {
             try {
-                SelectAvatarMenu.setChangingMenuActive(false);
+                SelectAvatarMenu.setIsChangingAvatarMenuActive(false);
                 new ProfileMenu().start(LoginMenu.stageOfProgram);
             } catch (Exception e) {
                 System.out.println("an error occurred");
@@ -78,16 +85,16 @@ public class SelectAvatarMenu extends Application {
     public void Register(MouseEvent mouseEvent) {
         if (UserController.getTemporaryAvatarAddress() == null) {
             Alert emptyAvatarAlert = new Alert(Alert.AlertType.ERROR);
-            emptyAvatarAlert.setTitle("register failed!");
-            emptyAvatarAlert.setHeaderText("register was not successful!");
-            emptyAvatarAlert.setContentText("you didn't choose any avatar!");
+            emptyAvatarAlert.setTitle("Register failed!");
+            emptyAvatarAlert.setHeaderText("Register was not successful!");
+            emptyAvatarAlert.setContentText("You didn't choose any avatar!");
             emptyAvatarAlert.showAndWait();
             return;
         }
-        if (isChangingMenuActive) {
+        if (isChangingAvatarMenuActive) {
             UserController.changeAvatar();
             try {
-                SelectAvatarMenu.setChangingMenuActive(true);
+                SelectAvatarMenu.setIsChangingAvatarMenuActive(true);
                 new ProfileMenu().start(LoginMenu.stageOfProgram);
             } catch (Exception e) {
                 System.out.println("an error occurred");
@@ -104,10 +111,11 @@ public class SelectAvatarMenu extends Application {
 
     @FXML
     public void initialize() {
-        if (isChangingMenuActive) {
-            registerBottom.setText("Change");
+        if (isChangingAvatarMenuActive) {
+            registerButton.setText("Change");
+            // changing text of Register button to "Change" for changing Avatar menu
         }
-        randomButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        randomAvatarButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 UserController.chooseRandomAvatar();
@@ -117,9 +125,9 @@ public class SelectAvatarMenu extends Application {
         chooseAvatarFromFileButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                String beforeChangeAddress = UserController.getTemporaryAvatarAddress();
+                String addressBeforeChangeAddress = UserController.getTemporaryAvatarAddress();
                 new FileChoosingMenu().start(LoginMenu.stageOfProgram);
-                if (!beforeChangeAddress.equals(UserController.getTemporaryAvatarAddress())) {
+                if (!addressBeforeChangeAddress.equals(UserController.getTemporaryAvatarAddress())) {
                     File fileOfAvatar = new File(UserController.getTemporaryAvatarAddress());
                     try {
                         selectedAvatar.setImage(new Image(fileOfAvatar.toURI().toURL().toExternalForm()));
@@ -129,86 +137,24 @@ public class SelectAvatarMenu extends Application {
                 }
             }
         });
-        avatar1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 1 + ".png"));
-                UserController.choosingAvatarFromTemplates(1);
-            }
-        });
-        avatar2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 2 + ".png"));
-                UserController.choosingAvatarFromTemplates(2);
-            }
-        });
-        avatar3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 3 + ".png"));
-                UserController.choosingAvatarFromTemplates(3);
-            }
-        });
-        avatar4.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 4 + ".png"));
-                UserController.choosingAvatarFromTemplates(4);
-            }
-        });
-        avatar5.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 5 + ".png"));
-                UserController.choosingAvatarFromTemplates(5);
-            }
-        });
-        avatar6.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 6 + ".png"));
-                UserController.choosingAvatarFromTemplates(6);
-            }
-        });
-        avatar7.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 7 + ".png"));
-                UserController.choosingAvatarFromTemplates(7);
-            }
-        });
-        avatar8.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                selectedAvatar.setImage(new Image(UserController.class.getResource
-                        ("/images/Avatars/").toString()
-                        + 8 + ".png"));
-                UserController.choosingAvatarFromTemplates(8);
-            }
-        });
-
+        chooseAvatarFromTemplatesEventHandling(avatar1 , 1);
+        chooseAvatarFromTemplatesEventHandling(avatar2 , 2);
+        chooseAvatarFromTemplatesEventHandling(avatar3 , 3);
+        chooseAvatarFromTemplatesEventHandling(avatar4 , 4);
+        chooseAvatarFromTemplatesEventHandling(avatar5 , 5);
+        chooseAvatarFromTemplatesEventHandling(avatar6 , 6);
+        chooseAvatarFromTemplatesEventHandling(avatar7 , 7);
+        chooseAvatarFromTemplatesEventHandling(avatar8 , 8);
     }
-
-    public static boolean isChangingMenuActive() {
-        return isChangingMenuActive;
-    }
-
-    public static void setChangingMenuActive(boolean changingMenuActive) {
-        isChangingMenuActive = changingMenuActive;
+    private static void chooseAvatarFromTemplatesEventHandling(ImageView avatar , int number) {
+        avatar.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                selectedAvatar.setImage(new Image(UserController.class.getResource
+                        ("/images/Avatars/").toString()
+                        + number + ".png"));
+                UserController.choosingAvatarFromTemplates(number);
+            }
+        });
     }
 }

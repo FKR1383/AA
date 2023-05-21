@@ -17,6 +17,10 @@ import view.Paths;
 import java.net.URL;
 
 public class RegisterMenu extends Application {
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField usernameField;
     @Override
     public void start(Stage stage) throws Exception {
         URL registerMenuFXMLUrl = RegisterMenu.class.getResource(Paths.REGISTER_MENU_FXML_FILE.getPath());
@@ -26,26 +30,21 @@ public class RegisterMenu extends Application {
         stage.show();
     }
 
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private TextField usernameField;
-
     public void register(MouseEvent mouseEvent) {
         String username = usernameField.getText();
         String password = passwordField.getText();
         if (username == null || username.equals("") || password == null || password.equals("")) {
             Alert emptyFieldAlert = new Alert(Alert.AlertType.ERROR);
-            emptyFieldAlert.setTitle("invalid register!");
-            emptyFieldAlert.setHeaderText("register was not successful!");
-            emptyFieldAlert.setContentText("username or password is empty!");
+            emptyFieldAlert.setTitle("Invalid register!");
+            emptyFieldAlert.setHeaderText("Register was not successful!");
+            emptyFieldAlert.setContentText("Username or password is empty!");
             emptyFieldAlert.showAndWait();
             return;
         }
         if (UserController.isUsernameExist(username)) {
             Alert usernameExistsAlert = new Alert(Alert.AlertType.ERROR);
-            usernameExistsAlert.setTitle("invalid register!");
-            usernameExistsAlert.setHeaderText("register was not successful!");
+            usernameExistsAlert.setTitle("Invalid register!");
+            usernameExistsAlert.setHeaderText("Register was not successful!");
             usernameExistsAlert.setContentText("A user with this username exists!");
             usernameExistsAlert.showAndWait();
             return;

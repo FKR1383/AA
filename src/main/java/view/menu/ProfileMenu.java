@@ -84,7 +84,7 @@ public class ProfileMenu extends Application {
 
     public void changeAvatar(MouseEvent mouseEvent) {
         try {
-            SelectAvatarMenu.setChangingMenuActive(true);
+            SelectAvatarMenu.setIsChangingAvatarMenuActive(true);
             new SelectAvatarMenu().start(LoginMenu.stageOfProgram);
         } catch (Exception e) {
             System.out.println("an error occurred");
