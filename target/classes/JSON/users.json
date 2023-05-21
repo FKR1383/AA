@@ -2,7 +2,7 @@
   {
     "username": "admin",
     "password": "123",
-    "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/2.png",
+    "avatarFilePath": "src/main/resources/images/customAvatars/null.png",
     "scoreOfDiff": [
       0,
       0,
@@ -27,6 +27,21 @@
       "2023-05-21 17:05:58",
       "2023-05-21 17:05:58",
       "2023-05-21 17:05:58"
+    ]
+  },
+  {
+    "username": "123",
+    "password": "123",
+    "avatarFilePath": "file:/D:/Sharif/Term2/AP/Tamrin%203/AA/AA/target/classes/images/Avatars/5.png",
+    "scoreOfDiff": [
+      0,
+      0,
+      0
+    ],
+    "lastGames": [
+      "2023-05-21 19:24:50",
+      "2023-05-21 19:24:50",
+      "2023-05-21 19:24:50"
     ]
   }
 ]

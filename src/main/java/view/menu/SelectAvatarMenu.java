@@ -1,5 +1,6 @@
 package view.menu;
 
+import controller.App;
 import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
@@ -46,6 +47,8 @@ public class SelectAvatarMenu extends Application {
     private Button randomAvatarButton;
     @FXML
     private ImageView selectedAvatar;
+    @FXML
+    private BorderPane avatarPane;
 
     public static boolean isIsChangingAvatarMenuActive() {
         return isChangingAvatarMenuActive;
@@ -60,6 +63,14 @@ public class SelectAvatarMenu extends Application {
         URL selectAvatarMenuFXMLUrl = SelectAvatarMenu.class.getResource
                 (Paths.SELECT_AVATAR_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(selectAvatarMenuFXMLUrl);
+        if (isChangingAvatarMenuActive) {
+            ImageView imageView = new ImageView(new Image(App.getCurrentUser().getAvatarFilePath()));
+            imageView.setTranslateY(675);
+            imageView.setTranslateX(175);
+            imageView.setFitHeight(100);
+            imageView.setFitWidth(100);
+            borderPane.getChildren().add(imageView);
+        }
         Scene selectAvatarMenuScene = new Scene(borderPane);
         stage.setScene(selectAvatarMenuScene);
         stage.show();
@@ -132,9 +143,8 @@ public class SelectAvatarMenu extends Application {
                 new FileChoosingMenu().start(LoginMenu.stageOfProgram);
                 if (addressBeforeChangeAddress == null ||
                         !addressBeforeChangeAddress.equals(UserController.getTemporaryAvatarAddress())) {
-                    File fileOfAvatar = new File(UserController.getTemporaryAvatarAddress());
                     try {
-                        selectedAvatar.setImage(new Image(fileOfAvatar.toURI().toURL().toExternalForm()));
+                        selectedAvatar.setImage(new Image(UserController.getTemporaryAvatarAddress()));
                     } catch (Exception e) {
                         System.out.println("an error occurred");
                     }

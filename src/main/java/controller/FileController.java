@@ -81,9 +81,10 @@ public class FileController {
                     (Paths.CUSTOM_AVATARS_PATH.getPath()
                             + UserController.getTemporaryUsername() + "." +
                             FileController.getFileExtension(file.getName())));
-            UserController.setTemporaryAvatarAddress(Paths.CUSTOM_AVATARS_PATH.getPath()
+            File fileOfAvatar = new File(Paths.CUSTOM_AVATARS_PATH.getPath()
                     + UserController.getTemporaryUsername() + "." +
                     FileController.getFileExtension(file.getName()));
+            UserController.setTemporaryAvatarAddress(fileOfAvatar.toURI().toURL().toExternalForm());
         } catch (Exception e) {
             Logger.getLogger(
                     FileChoosingMenu.class.getName()).log(
