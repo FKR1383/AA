@@ -124,7 +124,6 @@ public class GameViewController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
-                    songPlayer.stop();
                     new MainMenu().start(LoginMenu.stageOfProgram);
                 } catch (Exception e) {
                     System.out.println("an error occurred");

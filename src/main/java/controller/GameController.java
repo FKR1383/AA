@@ -4,9 +4,12 @@ import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -16,6 +19,7 @@ import model.User;
 import view.Animation.ChangeSizeOfBallsAnimation;
 import view.Animation.FadeOfBallsAnimation;
 import view.Animation.MoveOfFirstBallInWindAnimation;
+import view.Paths;
 import view.menu.GameMenu;
 import view.menu.LoginMenu;
 import view.menu.MainMenu;
@@ -39,7 +43,6 @@ public class GameController {
     public static boolean isPhase4 = false;
     public static int signOfRotation = 1;
     private static int musicsNumber = 1;
-    public static int scoreOfThisGame = -1;
 
     public static ArrayList<User> rankingOfUsers() {
         ArrayList<User> rankedUsers = new ArrayList<>(App.getAllUsers());
@@ -90,7 +93,6 @@ public class GameController {
         isPhase2 = false;
         isPhase3 = false;
         isPhase4 = false;
-        scoreOfThisGame = -1;
         time = System.currentTimeMillis();
         signOfRotation = 1;
     }
@@ -358,6 +360,9 @@ public class GameController {
                 (game.getNumberOfBalls() - game.getBalls().size())));
         GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
                 .size());
+        if (game.getBalls().size() <= 5) {
+            numberOfBallsText.setFill(Color.GREEN);
+        }
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
         if (!isPhase2 && (double)(game.getNumberOfBalls()-game.getBalls().size()) / game.getNumberOfBalls()
                 >= 0.24) {
@@ -368,6 +373,7 @@ public class GameController {
         if (!isPhase3 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
             >= 0.49) {
             isPhase3 = true;
+            numberOfBallsText.setFill(Color.YELLOW);
             GameController.runPhase3();
         }
         if (!isPhase4 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
@@ -451,32 +457,37 @@ public class GameController {
         return false;
     }
     
-    public static boolean checkCollide(){
-        for (int i = 0; i != game.getDiskWithNumber().getChildren().size(); i++) {
-            Object o = game.getDiskWithNumber().getChildren().get(i);
-            for (int j = 0; j != i; j++) {
-                Object p = game.getDiskWithNumber().getChildren().get(j);
-                if (o instanceof Ball && p instanceof Ball) {
-                    Ball first = (Ball) o;
-                    Ball second = (Ball) p;
-                    if (isCollide(first.getTranslateX() , first.getTranslateY() ,
-                    second.getTranslateX() , second.getTranslateY() ,
-                    first.getRadius())) {
-                        game.setEnd(true);
-                        game.setWin(false);
-                        System.out.println("lose");
-                        System.out.println("collide");
-                        return true;
+    public static boolean checkCollide() throws Exception {
+        if (game != null && game.getDiskWithNumber() != null) {
+            for (int i = 0; i != game.getDiskWithNumber().getChildren().size(); i++) {
+                Object o = game.getDiskWithNumber().getChildren().get(i);
+                for (int j = 0; j != i; j++) {
+                    Object p = game.getDiskWithNumber().getChildren().get(j);
+                    if (o instanceof Ball && p instanceof Ball) {
+                        Ball first = (Ball) o;
+                        Ball second = (Ball) p;
+                        if (isCollide(first.getTranslateX(), first.getTranslateY(),
+                                second.getTranslateX(), second.getTranslateY(),
+                                first.getRadius())) {
+                            game.setEnd(true);
+                            game.setWin(false);
+                            System.out.println("lose");
+                            System.out.println("collide");
+                            showState();
+                            return true;
+                        }
                     }
+
                 }
-            
-        }
-        }
-        if (game.getBalls().size() == 0) {
-            game.setEnd(true);
-            game.setWin(true);
-            System.out.println("win");
-            return true;
+            }
+            if (game.getBalls().size() == 0) {
+                game.setEnd(true);
+                game.setWin(true);
+                System.out.println("win");
+                showState();
+                return false;
+            }
+            return false;
         }
         return false;
     }
@@ -487,7 +498,6 @@ public class GameController {
             User user = App.getCurrentUser();
             int nowScore = user.getScoreOfDiff().get(GameController.getDifficulty() - 1);
             nowScore += game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
-            scoreOfThisGame = game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
             user.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             user.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
@@ -543,13 +553,27 @@ public class GameController {
                 durationInMillis = 3000;
             } break;
         }
-        rotateTransition.setDuration(Duration.millis(5000));
+        ImageView snowImage = new ImageView(new Image(
+                GameController.class.getResource("/images/icons/snowIcon.png").toExternalForm()));
+        snowImage.setFitWidth(100);
+        snowImage.setFitHeight(100);
+        snowImage.setTranslateX(175);
+        snowImage.setTranslateY(350);
+        gamePane.getChildren().add(snowImage);
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000) , snowImage);
+        fadeTransition.setCycleCount(-1);
+        fadeTransition.setFromValue(10);
+        fadeTransition.setToValue(0.1);
+        fadeTransition.play();
+        rotateTransition.setDuration(Duration.millis(durationInMillis));
         rotateTransition.setFromAngle(nowAngle);
         rotateTransition.setCycleCount(2);
         rotateTransition.setToAngle(nowAngle + signOfRotation*360);
         rotateTransition.play();
         rotateTransition.setOnFinished(e -> {
             rotateTransition.stop();
+            fadeTransition.stop();
+            gamePane.getChildren().remove(snowImage);
             long milliSecond = System.currentTimeMillis() - time;
             nowAngle = nowAngle + signOfRotation * ((double) milliSecond) /
                     ((double) timeOfRotation) * 360;
@@ -582,9 +606,9 @@ public class GameController {
             GameController.showLose();
         Label label = new Label("");
         if (GameController.game.isWin())
-            label.setText("You Win!\n" + GameController.scoreOfThisGame + " scores reached!");
+            label.setText("You Win!\n" + scoreText.getText() + " scores reached!");
         else
-            label.setText("You lose!\n" + GameController.scoreOfThisGame + " scores reached!");
+            label.setText("You Lose!\n" + scoreText.getText() + " scores reached!");
         Button button = new Button("OK!");
         VBox vBox = new VBox();
         vBox.getChildren().add(label);
@@ -642,6 +666,9 @@ public class GameController {
                 (game.getNumberOfBalls() - game.getBalls().size())));
         GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
                 .size());
+        if (GameController.game.getBalls().size() <= 5) {
+            numberOfBallsText.setFill(Color.GREEN);
+        }
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
         checkCollide();
         if (game.isEnd()) {

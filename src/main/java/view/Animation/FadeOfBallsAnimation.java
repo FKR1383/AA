@@ -23,7 +23,7 @@ public class FadeOfBallsAnimation extends Transition {
         this.setCycleDuration(Duration.millis(1000));
         this.play();
         this.setOnFinished(e -> {
-            if (GameController.checkCollide()) {
+            if (GameController.getGame().isEnd()) {
                 for (Object o : GameController.getGame().getDiskWithNumber().getChildren()) {
                     if (o instanceof Ball) {
                         ((Ball)o).setOpacity(1);

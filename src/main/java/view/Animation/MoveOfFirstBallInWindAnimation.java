@@ -97,8 +97,12 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
                 rod.setRotate(-angle-angle2*180/Math.PI);
             System.out.println("x : " + GameController.getGame().getOuterDisk().getTranslateX());
             System.out.println("y : " + game.getOuterDisk().getTranslateY());
-            checkCollide();
-                this.stop();
+            try {
+                checkCollide();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            this.stop();
             }
         }
 }

@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -30,6 +31,8 @@ public class LoginMenu extends Application {
     }
     public void start(Stage stage) throws Exception {
         stageOfProgram = stage;
+        stage.getIcons().add(new Image(LoginMenu.class.getResource("/images/icons/aaIcon.png")
+                .toExternalForm()));
         if (App.isStayLoggedIn()) {
             new MainMenu().start(stage);
         } else {

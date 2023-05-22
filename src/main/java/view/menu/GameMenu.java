@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -94,6 +95,7 @@ public class GameMenu extends Application {
                     public void handle(KeyEvent keyEvent) {
                         if (keyEvent.getCode().getName().equals("Space") &&
                                 !GameController.getGame().isEnd()) {
+                           runShootSound();
                             if (!GameController.isPhase4) {
                                 GameController.shoot();
                             } else {
@@ -206,6 +208,7 @@ public class GameMenu extends Application {
         gamePane.getChildren().add(numberOfBalls);
         numberOfBallsText = numberOfBalls;
         GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls().size());
+        numberOfBallsText.setFill(Color.RED);
         gamePane.getChildren().add(iceShowerHbox);
     }
 
@@ -217,6 +220,17 @@ public class GameMenu extends Application {
         if (GameMenu.isMute)
             mediaPlayer.setMute(true);
         songPlayer = mediaPlayer;
+    }
+
+    public void runShootSound() {
+        Media media = new Media(new File(Paths.MUSICS_PATH.getPath() + "clickSound.wav")
+                .toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setCycleCount(1);
+        if (GameMenu.isMute)
+            mediaPlayer.setMute(true);
+        mediaPlayer.play();
     }
 
 
