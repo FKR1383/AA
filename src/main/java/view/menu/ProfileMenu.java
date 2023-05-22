@@ -30,6 +30,12 @@ public class ProfileMenu extends Application {
     public void start(Stage stage) throws Exception {
         URL profileMenuFXMLUrl = ProfileMenu.class.getResource(Paths.PROFILE_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(profileMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            borderPane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            borderPane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
         Scene profileMenuScene = new Scene(borderPane);
         stage.setScene(profileMenuScene);
         stage.show();

@@ -2,6 +2,7 @@ package controller;
 
 import model.Game.Game;
 import model.User;
+import view.menu.GameMenu;
 
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class App {
         DBController.loadUsers();
         if (App.getCurrentUser() != null)
             App.setCurrentUser(UserController.getUserByUsername(App.currentUser.getUsername()));
+        GameMenu.playMusic();
     }
     public static boolean isStayLoggedIn() {
         return currentUser != null;

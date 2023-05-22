@@ -41,8 +41,12 @@ public class FadeOfBallsAnimation extends Transition {
                             ((Ball)o).getText().setOpacity(1);
                     }
                 }
-                GameController.showState();
-
+                try {
+                    GameController.showState();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                this.stop();
             } else {
                 new FadeOfBallsAnimation(-state);
             }
@@ -52,22 +56,26 @@ public class FadeOfBallsAnimation extends Transition {
     @Override
     protected void interpolate(double v) {
         double opacity = state > 0 ? v : 1-v;
-        for (Object o : GameController.getGame().getDiskWithNumber().getChildren()) {
-            if (o instanceof Ball) {
-                ((Ball)o).setOpacity(opacity);
-                if (((Ball) o).getText() != null)
-                    ((Ball)o).getText().setOpacity(opacity);
+        try {
+            for (Object o : GameController.getGame().getDiskWithNumber().getChildren()) {
+                if (o instanceof Ball) {
+                    ((Ball) o).setOpacity(opacity);
+                    if (((Ball) o).getText() != null)
+                        ((Ball) o).getText().setOpacity(opacity);
+                }
+                if (o instanceof Rod) {
+                    ((Rod) o).setOpacity(opacity);
+                }
             }
-            if (o instanceof Rod) {
-                ((Rod)o).setOpacity(opacity);
+            for (Object o : GameController.getGame().getBalls()) {
+                if (o instanceof Ball) {
+                    ((Ball) o).setOpacity(opacity);
+                    if (((Ball) o).getText() != null)
+                        ((Ball) o).getText().setOpacity(opacity);
+                }
             }
-        }
-        for (Object o : GameController.getGame().getBalls()) {
-            if (o instanceof Ball) {
-                ((Ball)o).setOpacity(opacity);
-                if (((Ball) o).getText() != null)
-                    ((Ball)o).getText().setOpacity(opacity);
-            }
+        } catch (Exception e) {
+            System.out.println("end");
         }
     }
 }

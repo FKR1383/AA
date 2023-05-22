@@ -13,7 +13,11 @@ public enum Paths {LOGIN_MENU_FXML_FILE("/FXML/loginMenu.fxml"),
     CUSTOM_AVATARS_PATH("src/main/resources/images/customAvatars/"),
     AVATARS_PATH("src/main/resources/images/Avatars/"),
     SELECT_AVATAR_MENU_FXML_FILE("/FXML/selectAvatarMenu.fxml"),
-    WALLPAPER_IMAGE_PATH("images/wallpaper.jpg");
+    WALLPAPER_IMAGE_PATH("images/wallpaper.jpg"),
+    MUSICS_PATH("src/main/resources/musics/"),
+    COMMON_STYLES_FILE_PATH("/CSS/commonStyles.css"),
+    BLACK_WHITE_STYLE_FILE_PATH("/CSS/BlackWhiteStyle.css"),
+    SHOW_SCORE_MENU_FXML_FILE("/FXML/showScoreMenu.fxml");
 
     private Paths(String path) {
         this.path = path;

@@ -2,6 +2,7 @@ package controller;
 
 
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -18,14 +19,22 @@ import view.menu.GameMenu;
 import view.menu.LoginMenu;
 import view.menu.MainMenu;
 
-import static view.menu.GameMenu.isMute;
-import static view.menu.GameMenu.isPlay;
+import static view.menu.GameMenu.*;
 
 public class GameViewController {
+
+    public static boolean isBlackWhiteThemeOn = false;
     public static Rectangle createMuteUnmuteIcon() {
-        Rectangle icon = new Rectangle(10 , 10 , 20 , 20);
-        icon.setFill(new ImagePattern(new Image
-                (GameViewController.class.getResource("/images/icons/unmuteIcon.png").toExternalForm())));
+        Rectangle icon = new Rectangle(380 , 10 , 20 , 20);
+        if (isMute == false) {
+            icon.setFill(new ImagePattern(new Image
+                    (GameViewController.class.getResource
+                            ("/images/icons/unmuteIcon.png").toExternalForm())));
+        } else {
+            icon.setFill(new ImagePattern(new Image
+                    (GameViewController.class.getResource
+                            ("/images/icons/muteIcon.jpg").toExternalForm())));
+        }
         icon.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -33,15 +42,32 @@ public class GameViewController {
                     icon.setFill
                             (new ImagePattern(new Image(GameMenu.class.getResource
                                     ("/images/icons/muteIcon.jpg").toExternalForm())));
+                    songPlayer.setMute(true);
                     isMute = true;
                 } else {
                     icon.setFill
                             (new ImagePattern(new Image(GameMenu.class.getResource
                                     ("/images/icons/unmuteIcon.png").toExternalForm())));
+                    songPlayer.setMute(false);
                     isMute = false;
                 }
             }
         });
+        return icon;
+    }
+
+    public static Rectangle createMenuIcon() {
+        Rectangle icon = new Rectangle(430 , 10 , 20 , 20);
+            icon.setFill(new ImagePattern(new Image
+                    (GameViewController.class.getResource
+                            ("/images/icons/menuIcon.png").toExternalForm())));
+        icon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+            }
+        });
+
         return icon;
     }
 
@@ -98,6 +124,7 @@ public class GameViewController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
+                    songPlayer.stop();
                     new MainMenu().start(LoginMenu.stageOfProgram);
                 } catch (Exception e) {
                     System.out.println("an error occurred");

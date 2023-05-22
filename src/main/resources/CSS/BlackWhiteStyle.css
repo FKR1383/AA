@@ -1,0 +1,73 @@
+* {
+    -fx-focus-traversable: false;
+}
+.Background {
+    -fx-background-color: white;
+}
+
+.Background_Lose {
+    -fx-background-color: red;
+}
+
+.Background_Win {
+    -fx-background-color: green;
+}
+
+Label {
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+Button {
+    -fx-min-width: 100;
+    -fx-max-width: 100;
+    -fx-font-size: 15;
+}
+
+Hyperlink {
+    -fx-font-size: 15;
+    -fx-text-fill: blue;
+}
+
+Hyperlink:hover {
+    -fx-text-fill: black;
+}
+
+Hyperlink:selected {
+    -fx-text-fill: purple;
+}
+
+Button {
+    -fx-background-color: black;
+    -fx-border-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+Button:hover {
+    -fx-background-color: gray;
+}
+
+TextField , PasswordField {
+    -fx-font-size: 15;
+}
+
+.bigButton {
+    -fx-min-width: 200;
+    -fx-max-width: 200;
+}
+
+.mainMenuButtons > Button {
+    -fx-min-width: 200;
+    -fx-max-width: 200;
+}
+
+.profileMenuButton > Button {
+    -fx-min-width: 200;
+    -fx-max-width: 200;
+}
+
+.ranksLabel {
+    -fx-min-width: 400;
+    -fx-max-width: 400;
+}

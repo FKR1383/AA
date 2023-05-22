@@ -5,6 +5,7 @@ module AA {
     requires java.desktop;
     requires java.logging;
     requires java.base;
+    requires javafx.media;
 
     exports view.menu;
     exports controller;

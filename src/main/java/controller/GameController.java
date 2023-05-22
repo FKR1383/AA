@@ -1,20 +1,12 @@
 package controller;
 
 import javafx.animation.*;
-import javafx.beans.binding.ObjectExpression;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Point3D;
-import javafx.scene.Group;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -24,29 +16,19 @@ import model.User;
 import view.Animation.ChangeSizeOfBallsAnimation;
 import view.Animation.FadeOfBallsAnimation;
 import view.Animation.MoveOfFirstBallInWindAnimation;
-import view.Paths;
 import view.menu.GameMenu;
 import view.menu.LoginMenu;
 import view.menu.MainMenu;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.random.RandomGenerator;
 
 import static view.menu.GameMenu.*;
 
 public class GameController {
-    private static int difficulty = 2;
-    private static int collides = 0;
-
-    public static int getDifficulty() {
-        return difficulty;
-    }
-
     public static Game game;
+    private static int difficulty = 2;
     private static RotateTransition rotateTransition;
     public static double nowAngle = 0;
     public static long time;
@@ -55,12 +37,9 @@ public class GameController {
     private static boolean isPhase2 = false;
     private static boolean isPhase3 = false;
     public static boolean isPhase4 = false;
-
-    public static void setDifficulty(int difficulty) {
-        GameController.difficulty = difficulty;
-    }
     public static int signOfRotation = 1;
-    private static boolean isBeingBig = true;
+    private static int musicsNumber = 1;
+    public static int scoreOfThisGame = -1;
 
     public static ArrayList<User> rankingOfUsers() {
         ArrayList<User> rankedUsers = new ArrayList<>(App.getAllUsers());
@@ -80,22 +59,21 @@ public class GameController {
         game = g;
     }
 
-    private static String getColorByNumberOfMap(int numberOfMap) {
-        switch (numberOfMap) {
-            case 1:
-                return "blue";
-            case 2:
-                return "orange";
-            case 3:
-                return "green";
-        }
-        return "";
-    }
-
-
     public static void createGame(int numberOfMap, int numberOfBalls) {
-        Game game = new Game(difficulty, getColorByNumberOfMap(numberOfMap), createBalls(numberOfBalls)
-                , createDisk(numberOfMap), numberOfBalls, rotatingByDifficulty(),
+        StackPane stackPane = null;
+        switch (numberOfMap) {
+            case 1 : {
+                stackPane = createDiskMap1();
+            } break;
+            case 2 : {
+                stackPane = createDiskMap2();
+            } break;
+            case 3 : {
+                stackPane = createDiskMap3();
+            }
+        }
+        Game game = new Game(difficulty, "", createBalls(numberOfBalls)
+                , stackPane, numberOfBalls, rotatingByDifficulty(),
                 windSpeedByDifficulty(), iceTimerByDifficulty());
         OuterDisk outerDisk = new OuterDisk();
         outerDisk.setTranslateX(225);
@@ -112,9 +90,9 @@ public class GameController {
         isPhase2 = false;
         isPhase3 = false;
         isPhase4 = false;
+        scoreOfThisGame = -1;
         time = System.currentTimeMillis();
         signOfRotation = 1;
-
     }
 
     private static double windSpeedByDifficulty() {
@@ -146,9 +124,9 @@ public class GameController {
             case 1:
                 return 5;
             case 2:
-                return 10;
+                return 6;
             case 3:
-                return 25;
+                return 10;
         }
         return 0;
     }
@@ -178,73 +156,112 @@ public class GameController {
         });
     }
 
-    private static StackPane createDisk(int numberOfMap) {
+    public static void createBallAndRod(double angle, StackPane disk) {
+        Rod rod = new Rod();
+        Ball ball = new Ball();
+        ball.setRadius(10);
+        ball.setTranslateX(Math.cos(angle) * 200);
+        ball.setTranslateY(Math.sin(angle) * 200);
+        rod.setTranslateX(Math.cos(angle) * 100);
+        rod.setTranslateY(Math.sin(angle) * 100);
+        rod.setScaleY(200);
+        rod.setRotate(angle*180/Math.PI-90);
+        disk.getChildren().add(ball);
+        disk.getChildren().add(rod);
+    }
+
+    private static StackPane createDiskMap1() {
+        StackPane stackPane = new StackPane();
         Disk disk = new Disk();
         disk.setRadius(80);
         Text text = new Text("1");
         text.setScaleX(5);
         text.setScaleY(5);
-        Rod rod = new Rod();
-        Ball ball = new Ball();
-        ball.setRadius(10);
-        ball.setTranslateX(0);
-        ball.setTranslateY(200);
-        rod.setTranslateX(0);
-        rod.setTranslateY(100);
-        rod.setScaleY(200);
-        Rod rod2 = new Rod();
-        Ball ball2 = new Ball();
-        ball2.setRadius(10);
-        ball2.setTranslateX((double) 200 * Math.cos(Math.PI / 6));
-        ball2.setTranslateY((double) 200 * Math.cos(Math.PI / 3));
-        rod2.setTranslateX((double) 100 * Math.cos(Math.PI / 6));
-        rod2.setTranslateY((double) 100 * Math.cos(Math.PI / 3));
-        rod2.setScaleY(200);
-        rod2.setRotate(-60);
-        Rod rod3 = new Rod();
-        Ball ball3 = new Ball();
-        ball3.setRadius(10);
-        ball3.setTranslateX((double) 200 * Math.cos(Math.PI / 6));
-        ball3.setTranslateY(-(double) 200 * Math.cos(Math.PI / 3));
-        rod3.setTranslateX((double) 100 * Math.cos(Math.PI / 6));
-        rod3.setTranslateY(-(double) 100 * Math.cos(Math.PI / 3));
-        rod3.setScaleY(200);
-        rod3.setRotate(-120);
-        Rod rod4 = new Rod();
-        Ball ball4 = new Ball();
-        ball4.setRadius(10);
-        ball4.setTranslateX(-(double) 200 * Math.cos(Math.PI / 6));
-        ball4.setTranslateY((double) 200 * Math.cos(Math.PI / 3));
-        rod4.setTranslateX(-(double) 100 * Math.cos(Math.PI / 6));
-        rod4.setTranslateY((double) 100 * Math.cos(Math.PI / 3));
-        rod4.setScaleY(200);
-        rod4.setRotate(60);
-        Rod rod5 = new Rod();
-        Ball ball5 = new Ball();
-        ball5.setRadius(10);
-        ball5.setTranslateX(0);
-        ball5.setTranslateY(-200);
-        rod5.setTranslateX(0);
-        rod5.setTranslateY(-100);
-        rod5.setScaleY(200);
-        rod5.setRotate(180);
-        Rod rod6 = new Rod();
-        Ball ball6 = new Ball();
-        ball6.setRadius(10);
-        ball6.setTranslateX(-(double) 200 * Math.cos(Math.PI / 6));
-        ball6.setTranslateY(-(double) 200 * Math.cos(Math.PI / 3));
-        rod6.setTranslateX(-(double) 100 * Math.cos(Math.PI / 6));
-        rod6.setTranslateY(-(double) 100 * Math.cos(Math.PI / 3));
-        rod6.setScaleY(200);
-        rod6.setRotate(120);
-        Color color = Color.rgb(225, 0, 0);
-
+        createBallAndRod(Math.PI/4 , stackPane);
+        createBallAndRod(Math.PI/4*2 , stackPane);
+        createBallAndRod(Math.PI/4*3 , stackPane);
+        createBallAndRod(Math.PI , stackPane);
+        createBallAndRod(Math.PI/4*5 , stackPane);
+        createBallAndRod(Math.PI/2*3, stackPane);
+        createBallAndRod(Math.PI/4*7, stackPane);
+        createBallAndRod(Math.PI/4*8, stackPane);
+        Color color = null;
+        if (GameViewController.isBlackWhiteThemeOn) {
+            color = Color.BLACK;
+            text.setFill(Color.WHITE);
+        } else {
+            color = Color.rgb(100, 200, 5);
+        }
         disk.setFill(color);
-
-        StackPane stackPane = new StackPane(ball, rod, ball2, rod2, rod3, ball3,
-                rod4, ball4, rod5, ball5, rod6, ball6, disk, text);
+        stackPane.getChildren().add(disk);
+        stackPane.getChildren().add(text);
         stackPane.setTranslateX(145);
         stackPane.setTranslateY(320);
+        settingRotateTransition(stackPane);
+        return stackPane;
+    }
+    private static StackPane createDiskMap3() {
+        StackPane stackPane = new StackPane();
+        Disk disk = new Disk();
+        disk.setRadius(80);
+        Text text = new Text("1");
+        text.setScaleX(5);
+        text.setScaleY(5);
+        createBallAndRod(Math.PI/3 , stackPane);
+        createBallAndRod(Math.toRadians(110) , stackPane);
+        createBallAndRod(Math.toRadians(130) , stackPane);
+        createBallAndRod(Math.PI , stackPane);
+        createBallAndRod(Math.toRadians(230) , stackPane);
+        createBallAndRod(Math.toRadians(250) , stackPane);
+        createBallAndRod(Math.PI/3*5 , stackPane);
+        createBallAndRod(Math.toRadians(10) , stackPane);
+        createBallAndRod(Math.toRadians(-10) , stackPane);
+        Color color = null;
+        if (GameViewController.isBlackWhiteThemeOn) {
+            color = Color.BLACK;
+            text.setFill(Color.WHITE);
+        } else {
+            color = Color.rgb(250, 200, 0);
+        }
+        disk.setFill(color);
+        stackPane.getChildren().add(disk);
+        stackPane.getChildren().add(text);
+        stackPane.setTranslateX(145);
+        stackPane.setTranslateY(320);
+        settingRotateTransition(stackPane);
+        return stackPane;
+    }
+
+    private static StackPane createDiskMap2() {
+        StackPane stackPane = new StackPane();
+        Disk disk = new Disk();
+        disk.setRadius(80);
+        Text text = new Text("1");
+        text.setScaleX(5);
+        text.setScaleY(5);
+        createBallAndRod(Math.PI/2 , stackPane);
+        createBallAndRod(Math.PI/6 , stackPane);
+        createBallAndRod(-Math.PI/6 , stackPane);
+        createBallAndRod(Math.PI/6*5 , stackPane);
+        createBallAndRod(-Math.PI/2 , stackPane);
+        createBallAndRod(-Math.PI/6*5, stackPane);
+        Color color = null;
+        if (GameViewController.isBlackWhiteThemeOn) {
+            color = Color.BLACK;
+            text.setFill(Color.WHITE);
+        } else {
+            color = Color.rgb(225, 0, 0);
+        }
+        disk.setFill(color);
+        stackPane.getChildren().add(disk);
+        stackPane.getChildren().add(text);
+        stackPane.setTranslateX(145);
+        stackPane.setTranslateY(320);
+        settingRotateTransition(stackPane);
+        return stackPane;
+    }
+
+    public static void settingRotateTransition(StackPane stackPane){
         RotateTransition rt = new RotateTransition(Duration.millis
                 (15000 / GameController.rotatingByDifficulty()), stackPane);
         timeOfRotation = 15000 / GameController.rotatingByDifficulty();
@@ -255,7 +272,6 @@ public class GameController {
         rt.play();
         time = System.currentTimeMillis();
         rotateTransition = rt;
-        return stackPane;
     }
 
     private static ArrayList<Ball> createBalls(int numberOfBalls) {
@@ -286,39 +302,46 @@ public class GameController {
             translateTransition2.stop();
             translateTransition.stop();
             if (ball.equals(firstBall)) {
-                long milliSeconds = 0;
-                milliSeconds = System.currentTimeMillis() - time;
-                Rod rod = new Rod();
-                double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
-                firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
-                firstBall.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
-                firstBall.setRotate(-angle);
-                firstBall.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
-                firstBall.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
-                firstBall.getText().setRotate(-angle);
-                rod.setTranslateX((double) 100 * Math.sin(Math.toRadians(angle)));
-                rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle)));
-                rod.setScaleY(200);
-                rod.setRotate(-angle);
-                Text text = (Text) game.getDiskWithNumber().getChildren().get
-                        (game.getDiskWithNumber().getChildren().size() - 1);
-                game.getDiskWithNumber().getChildren().remove
-                        (game.getDiskWithNumber().getChildren().size() - 1);
-                Disk disk = (Disk) game.getDiskWithNumber().getChildren().get
-                        (game.getDiskWithNumber().getChildren().size() - 1);
-                game.getDiskWithNumber().getChildren().remove(disk);
-                game.getDiskWithNumber().getChildren().add(rod);
-                game.getDiskWithNumber().getChildren().add(firstBall);
-                game.getDiskWithNumber().getChildren().add(firstBall.getText());
-                game.getDiskWithNumber().getChildren().add(disk);
-                game.getDiskWithNumber().getChildren().add(text);
-                checkCollide();
-                if (game.isEnd()) {
-                    GameController.showState();
+                try {
+                    checkEndgame(ball , firstBall);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
 
+    }
+    public static void checkEndgame(Ball ball , Ball firstBall) throws Exception {
+        long milliSeconds = 0;
+        milliSeconds = System.currentTimeMillis() - time;
+        Rod rod = new Rod();
+        double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
+        firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
+        firstBall.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
+        firstBall.setRotate(-angle);
+        firstBall.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
+        firstBall.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
+        firstBall.getText().setRotate(-angle);
+        rod.setTranslateX((double) 100 * Math.sin(Math.toRadians(angle)));
+        rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle)));
+        rod.setScaleY(200);
+        rod.setRotate(-angle);
+        Text text = (Text) game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        game.getDiskWithNumber().getChildren().remove
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        Disk disk = (Disk) game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        game.getDiskWithNumber().getChildren().remove(disk);
+        game.getDiskWithNumber().getChildren().add(rod);
+        game.getDiskWithNumber().getChildren().add(firstBall);
+        game.getDiskWithNumber().getChildren().add(firstBall.getText());
+        game.getDiskWithNumber().getChildren().add(disk);
+        game.getDiskWithNumber().getChildren().add(text);
+        checkCollide();
+        if (game.isEnd()) {
+            GameController.showState();
+        }
     }
 
     public static void shoot() {
@@ -331,6 +354,10 @@ public class GameController {
                 itr.remove();
             }
         }
+        GameMenu.scoreText.setText(String.format("score : %d",game.getDifficulty() *
+                (game.getNumberOfBalls() - game.getBalls().size())));
+        GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                .size());
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
         if (!isPhase2 && (double)(game.getNumberOfBalls()-game.getBalls().size()) / game.getNumberOfBalls()
                 >= 0.24) {
@@ -360,6 +387,18 @@ public class GameController {
     private static void changingDegree() {
         if (!isPhase4)
             return;
+        int durationInMillis = 0;
+        switch (GameController.getDifficulty()) {
+            case 1 : {
+                durationInMillis = 5000;
+            } break;
+            case 2 : {
+                durationInMillis = 3000;
+            } break;
+            case 3 : {
+                durationInMillis = 2000;
+            } break;
+        }
         RotateTransition degreeChanging = new RotateTransition(Duration.millis(5000)
         , GameController.getGame().getOuterDisk());
         degreeChanging.setCycleCount(1);
@@ -370,7 +409,6 @@ public class GameController {
             }
             Random random = new Random();
             int degree = (Math.abs(random.nextInt()) % 31) - 15;
-            System.out.println("do that");
             degreeText.setText(String.format("%d" , degree));
             changingDegree();
         });
@@ -387,24 +425,6 @@ public class GameController {
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Win");
         GameController.distributionOfScore();
-        Label label = new Label("Game Over!");
-        Button button = new Button("ok!");
-        VBox vBox = new VBox();
-        vBox.getChildren().add(label);
-        vBox.getChildren().add(button);
-        gamePane.getChildren().add(vBox);
-        vBox.setTranslateX(180);
-        vBox.setTranslateY(100);
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try {
-                    new MainMenu().start(LoginMenu.stageOfProgram);
-                } catch (Exception e) {
-                    System.out.println("an error occurred");
-                }
-            }
-        });
     }
 
     public static boolean checkCollide2(Ball ball) {
@@ -417,7 +437,7 @@ public class GameController {
                     game.setEnd(true);
                     game.setWin(false);
                     System.out.println("lose");
-                    System.out.println("collide" + (++collides));
+                    System.out.println("collide");
                     return true;
                 }
             }
@@ -445,7 +465,7 @@ public class GameController {
                         game.setEnd(true);
                         game.setWin(false);
                         System.out.println("lose");
-                        System.out.println("collide" + (++collides));
+                        System.out.println("collide");
                         return true;
                     }
                 }
@@ -467,6 +487,7 @@ public class GameController {
             User user = App.getCurrentUser();
             int nowScore = user.getScoreOfDiff().get(GameController.getDifficulty() - 1);
             nowScore += game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
+            scoreOfThisGame = game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
             user.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             user.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
@@ -480,24 +501,7 @@ public class GameController {
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Lose");
         GameController.distributionOfScore();
-        Label label = new Label("Game Over!");
-        Button button = new Button("ok!");
-        VBox vBox = new VBox();
-        vBox.getChildren().add(label);
-        vBox.getChildren().add(button);
-        gamePane.getChildren().add(vBox);
-        vBox.setTranslateX(180);
-        vBox.setTranslateY(100);
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try {
-                    new MainMenu().start(LoginMenu.stageOfProgram);
-                } catch (Exception e) {
-                    System.out.println("an error occurred");
-                }
-            }
-        });
+
     }
 
     private static boolean isCollide(double cx1 , double cy1 , double cx2 ,
@@ -527,6 +531,18 @@ public class GameController {
         timeOfRotation = 5000;
         isIceMode = true;
         rotateTransition.stop();
+        int durationInMillis = 0;
+        switch (GameController.difficulty) {
+            case 1 : {
+                durationInMillis = 5000;
+            } break;
+            case 2 : {
+                durationInMillis = 4000;
+            } break;
+            case 3 : {
+                durationInMillis = 3000;
+            } break;
+        }
         rotateTransition.setDuration(Duration.millis(5000));
         rotateTransition.setFromAngle(nowAngle);
         rotateTransition.setCycleCount(2);
@@ -544,7 +560,6 @@ public class GameController {
             rotateTransition.setToAngle(nowAngle + (signOfRotation) * 360);
             rotateTransition.setCycleCount(Timeline.INDEFINITE);
             rotateTransition.play();
-            System.out.println("wow!");
         });
     }
     public static int getTimeOfRotation() {
@@ -556,17 +571,39 @@ public class GameController {
     }
 
     public static void bigAndSmallBalls(int index) {
-        System.out.println("showIt");
         Transition transition = new ChangeSizeOfBallsAnimation(index , game.getDiskWithNumber());
     }
 
-    public static void showState() {
+    public static void showState() throws Exception {
         rotateTransition.stop();
-
         if (game.isWin())
             GameController.showWin();
         else
             GameController.showLose();
+        Label label = new Label("");
+        if (GameController.game.isWin())
+            label.setText("You Win!\n" + GameController.scoreOfThisGame + " scores reached!");
+        else
+            label.setText("You lose!\n" + GameController.scoreOfThisGame + " scores reached!");
+        Button button = new Button("OK!");
+        VBox vBox = new VBox();
+        vBox.getChildren().add(label);
+        vBox.getChildren().add(button);
+        gamePane.getChildren().add(vBox);
+        vBox.setTranslateX(20);
+        vBox.setTranslateY(20);
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    GameController.game.setDiskWithNumber(null);
+                    GameController.game.setBalls(null);
+                    new MainMenu().start(LoginMenu.stageOfProgram);
+                } catch (Exception e) {
+                    System.out.println("an error occurred");
+                }
+            }
+        });
     }
 
     public static void moveRight() {
@@ -591,7 +628,7 @@ public class GameController {
         }
     }
 
-    public static void shoot2() {
+    public static void shoot2() throws Exception {
         Ball firstBall = GameController.getGame().getBalls().get(0);
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
@@ -601,6 +638,10 @@ public class GameController {
                 itr.remove();
             }
         }
+        GameMenu.scoreText.setText(String.format("score : %d",game.getDifficulty() *
+                (game.getNumberOfBalls() - game.getBalls().size())));
+        GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                .size());
         progressBarField.setProgress(progressBarField.getProgress() + 0.1);
         checkCollide();
         if (game.isEnd()) {
@@ -626,5 +667,14 @@ public class GameController {
                 translateTransition.stop();
             });
         }
+    }
+
+
+    public static int getDifficulty() {
+        return difficulty;
+    }
+
+    public static void setDifficulty(int difficulty) {
+        GameController.difficulty = difficulty;
     }
 }

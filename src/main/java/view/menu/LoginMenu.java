@@ -35,6 +35,12 @@ public class LoginMenu extends Application {
         } else {
             URL loginMenuFXMLUrl = LoginMenu.class.getResource(Paths.LOGIN_MENU_FXML_FILE.getPath());
             BorderPane borderPane = FXMLLoader.load(loginMenuFXMLUrl);
+            if (GameViewController.isBlackWhiteThemeOn) {
+                borderPane.getStylesheets().remove(getClass().getResource(
+                        Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+                borderPane.getStylesheets().add(getClass().getResource(
+                        Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+            }
             Scene loginMenuScene = new Scene(borderPane);
             stage.setScene(loginMenuScene);
             stage.show();

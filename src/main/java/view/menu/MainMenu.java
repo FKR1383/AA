@@ -2,6 +2,7 @@ package view.menu;
 
 
 import controller.App;
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -22,6 +23,12 @@ public class MainMenu extends Application {
     public void start(Stage stage) throws Exception {
         URL mainMenuFXMLUrl = MainMenu.class.getResource(Paths.MAIN_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(mainMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            borderPane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            borderPane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
         Scene mainMenuScene = new Scene(borderPane);
         stage.setScene(mainMenuScene);
         stage.show();
@@ -61,7 +68,7 @@ public class MainMenu extends Application {
 
     public void resumingPreviousGame(MouseEvent mouseEvent) {
         if (App.isStayLoggedIn()) {
-
+            // TODO: how to run game from resume???
         }
     }
 

@@ -63,6 +63,12 @@ public class SelectAvatarMenu extends Application {
         URL selectAvatarMenuFXMLUrl = SelectAvatarMenu.class.getResource
                 (Paths.SELECT_AVATAR_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(selectAvatarMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            borderPane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            borderPane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
         if (isChangingAvatarMenuActive) {
             ImageView imageView = new ImageView(new Image(App.getCurrentUser().getAvatarFilePath()));
             imageView.setTranslateY(675);

@@ -2,6 +2,7 @@ package view.menu;
 
 
 import controller.GameController;
+import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -31,11 +32,18 @@ public class ScoreboardMenu extends Application {
     public Label rank8;
     public Label rank9;
     public Label rank10;
+    public Label stateOfWin;
 
     @Override
     public void start(Stage stage) throws Exception {
         URL scoreboardMenuFXMLUrl = ScoreboardMenu.class.getResource(Paths.SCOREBOARD_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(scoreboardMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            borderPane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            borderPane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
         Scene scoreboardMenuScene = new Scene(borderPane);
         stage.setScene(scoreboardMenuScene);
         stage.show();

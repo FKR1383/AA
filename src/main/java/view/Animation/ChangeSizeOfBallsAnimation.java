@@ -36,7 +36,11 @@ public class ChangeSizeOfBallsAnimation extends Transition {
         this.play();
         this.setOnFinished(e -> {
             if (GameController.checkCollide()) {
-                GameController.showState();
+                try {
+                    GameController.showState();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             } else {
                 new ChangeSizeOfBallsAnimation(-percent, diskWithBalls);
             }

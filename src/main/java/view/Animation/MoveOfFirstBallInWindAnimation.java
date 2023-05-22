@@ -50,7 +50,11 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
         if (ball.getTranslateX() <= 25 || ball.getTranslateX() >= 425) {
             GameController.getGame().setEnd(true);
             GameController.getGame().setWin(false);
-            GameController.showState();
+            try {
+                GameController.showState();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             this.stop();
         }
         if (GameController.isCollide(ball.getTranslateX() , ball.getTranslateY() ,
@@ -93,6 +97,7 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
                 rod.setRotate(-angle-angle2*180/Math.PI);
             System.out.println("x : " + GameController.getGame().getOuterDisk().getTranslateX());
             System.out.println("y : " + game.getOuterDisk().getTranslateY());
+            checkCollide();
                 this.stop();
             }
         }

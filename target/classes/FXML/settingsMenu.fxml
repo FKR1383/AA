@@ -18,6 +18,8 @@
             <Button text="level 1" fx:id="level1Button"/>
             <Button text="level 2" fx:id="level2Button"/>
             <Button text="level 3" fx:id="level3Button"/>
+            <Button text="Change theme" onMouseClicked="#changeTheme" styleClass="bigButton"/>
+            <Button text="Back" onMouseClicked="#back"/>
         </VBox>
     </center>
 </BorderPane>

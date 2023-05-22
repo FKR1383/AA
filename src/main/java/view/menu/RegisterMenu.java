@@ -26,6 +26,12 @@ public class RegisterMenu extends Application {
     public void start(Stage stage) throws Exception {
         URL registerMenuFXMLUrl = RegisterMenu.class.getResource(Paths.REGISTER_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(registerMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            borderPane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            borderPane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
         Scene registerMenuScene = new Scene(borderPane);
         stage.setScene(registerMenuScene);
         stage.show();

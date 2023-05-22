@@ -27,8 +27,16 @@ import javafx.util.Duration;
 import model.Game.Ball;
 import model.Game.Game;
 import view.Paths;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 
 
+
+import java.io.File;
 import java.net.URL;
 
 public class GameMenu extends Application {
@@ -44,66 +52,32 @@ public class GameMenu extends Application {
     public static Text degreeText;
     public static Scene scene;
     public static ProgressBar progressBarField;
-
     public static int numberOfMap = 2;
+    public static MediaPlayer songPlayer;
+    public static Text scoreText;
+    public static Text numberOfBallsText;
     @Override
     public void start(Stage stage) throws Exception {
         URL gameMenuFXMLUrl = GameMenu.class.getResource(Paths.GAME_MENU_FXML_FILE.getPath());
         Pane pane = FXMLLoader.load(gameMenuFXMLUrl);
+        if (GameViewController.isBlackWhiteThemeOn) {
+            pane.getStylesheets().remove(getClass().getResource(
+                    Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
+            pane.getStylesheets().add(getClass().getResource(
+                    Paths.BLACK_WHITE_STYLE_FILE_PATH.getPath()).toExternalForm());
+        }
+        gamePane = pane;
         Rectangle mute_unmuteIcon = GameViewController.createMuteUnmuteIcon();
         pane.getChildren().add(mute_unmuteIcon);
-        /*Rectangle play_pauseIcon = GameViewController.createPlayPauseIcon();
-        pane.getChildren().add(play_pauseIcon);*/
-        /*Label numberLabel = new Label();
-        numberLabel.setBounds(20 , 400 , 200 , 20);
-        pane.getChildren().add(numberOfBallsField);
-        pane.getChildren().add(numberLabel);*/
+
         ballsText = GameViewController.createNumberField();
         pane.getChildren().add(ballsText);
         pane.getChildren().add(GameViewController.createNumberLabel());
-        HBox maps = new HBox();
-        maps.setAlignment(Pos.CENTER);
-        maps.setSpacing(50);
-        maps.setTranslateX(25);
-        maps.setTranslateY(450);
-        Button map1 = new Button();
-        Button map2 = new Button();
-        Button map3=  new Button();
-        map1.setText("map1");
-        map2.setText("map2");
-        map3.setText("map3");
-        map1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                numberOfMap = 1;
-            }
-        });
-        map2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                numberOfMap = 2;
-            }
-        });
-        map3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                numberOfMap = 3;
-            }
-        });
-        map1Button = map1;
-        map2Button = map2;
-        map3Button = map3;
-        maps.getChildren().add(map1);
-        maps.getChildren().add(map2);
-        maps.getChildren().add(map3);
-        pane.getChildren().add(maps);
-        HBox buttons = new HBox();
-        buttons.setSpacing(20);
-        buttons.setTranslateX(110);
-        buttons.setTranslateY(500);
-        Button start = GameViewController.createStartButton();
-        startButton = start;
-        gamePane = pane;
+        createButtons();
+        selectingMapHandling(map1Button , 1);
+        selectingMapHandling(map2Button , 2);
+        selectingMapHandling(map3Button , 3);
+
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -111,18 +85,9 @@ public class GameMenu extends Application {
                 gamePane.getChildren().clear();
                 gamePane.getChildren().add(GameController.getGame().getOuterDisk());
                 gamePane.getChildren().add(GameController.getGame().getDiskWithNumber());
-                int startY = 650;
-                for (int i = 0; i != GameController.getGame().getBalls().size(); i++) {
-                    Ball ball = (Ball)(GameController.getGame().getBalls().get(i));
-                    Ball stackBall = GameController.getGame().getBalls().get(i);
-                    stackBall.setTranslateX(215);
-                    stackBall.setTranslateY(startY);
-                    stackBall.getText().setTranslateX(208);
-                    stackBall.getText().setTranslateY(startY+3);
-                    startY += 50;
-                    gamePane.getChildren().add(GameController.getGame().getBalls().get(i));
-                    gamePane.getChildren().add(GameController.getGame().getBalls().get(i).getText());
-                }
+                gamePane.getChildren().add(GameViewController.createMuteUnmuteIcon());
+                addBallsToGame();
+                addLabelsToPane();
                 gamePane.requestFocus();
                 gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
                     @Override
@@ -132,7 +97,11 @@ public class GameMenu extends Application {
                             if (!GameController.isPhase4) {
                                 GameController.shoot();
                             } else {
-                                GameController.shoot2();
+                                try {
+                                    GameController.shoot2();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         } else if (keyEvent.getCode().getName().equals("Tab")) {
                             try {
@@ -152,31 +121,104 @@ public class GameMenu extends Application {
                         }
                     }
                 });
-                HBox iceShowerHbox = new HBox();
-                iceShowerHbox.setTranslateX(20);
-                Text text = new Text(20 , 5,"ice progress : " );
-                ProgressBar progressBar = new ProgressBar(0);
-                Text degreeLabelText = new Text(50 , 5 , "degree : ");
-                Text degreeT = new Text(55 , 5 ,"0");
-                degreeText = degreeT;
-                progressBarField = progressBar;
-                iceShowerHbox.getChildren().add(text);
-                iceShowerHbox.getChildren().add(progressBar);
-                iceShowerHbox.getChildren().add(degreeLabelText);
-                iceShowerHbox.getChildren().add(degreeT);
-                degreeT.setText("0");
-                gamePane.getChildren().add(iceShowerHbox);
+
             }
         });
-        Button back = GameViewController.createBackButton();
-        buttons.getChildren().add(start);
-        buttons.getChildren().add(back);
-        pane.getChildren().add(buttons);
         Scene gameMenuScene = new Scene(pane);
         scene = gameMenuScene;
         stage.setScene(gameMenuScene);
         stage.show();
     }
+
+    public void createButtons() {
+        HBox maps = new HBox();
+        maps.setAlignment(Pos.CENTER);
+        maps.setSpacing(50);
+        maps.setTranslateX(25);
+        maps.setTranslateY(450);
+        Button map1 = new Button();
+        Button map2 = new Button();
+        Button map3=  new Button();
+        map1.setText("map1");
+        map2.setText("map2");
+        map3.setText("map3");
+        map1Button = map1;
+        map2Button = map2;
+        map3Button = map3;
+        maps.getChildren().add(map1);
+        maps.getChildren().add(map2);
+        maps.getChildren().add(map3);
+        gamePane.getChildren().add(maps);
+        HBox buttons = new HBox();
+        buttons.setSpacing(20);
+        buttons.setTranslateX(110);
+        buttons.setTranslateY(500);
+        Button start = GameViewController.createStartButton();
+        startButton = start;
+        Button back = GameViewController.createBackButton();
+        buttons.getChildren().add(start);
+        buttons.getChildren().add(back);
+        gamePane.getChildren().add(buttons);
+    }
+
+    public void selectingMapHandling(Button button , int number) {
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                numberOfMap = number;
+            }
+        });
+    }
+
+    public void addBallsToGame() {
+        int startY = 650;
+        for (int i = 0; i != GameController.getGame().getBalls().size(); i++) {
+            Ball ball = (Ball)(GameController.getGame().getBalls().get(i));
+            Ball stackBall = GameController.getGame().getBalls().get(i);
+            stackBall.setTranslateX(215);
+            stackBall.setTranslateY(startY);
+            stackBall.getText().setTranslateX(208);
+            stackBall.getText().setTranslateY(startY+3);
+            startY += 50;
+            gamePane.getChildren().add(GameController.getGame().getBalls().get(i));
+            gamePane.getChildren().add(GameController.getGame().getBalls().get(i).getText());
+        }
+    }
+
+    public void addLabelsToPane() {
+        HBox iceShowerHbox = new HBox();
+        iceShowerHbox.setTranslateX(20);
+        iceShowerHbox.setSpacing(5);
+        Text text = new Text(20 , 5,"ice progress : " );
+        ProgressBar progressBar = new ProgressBar(0);
+        Text degreeLabelText = new Text(45 , 5 , "degree : ");
+        Text degreeT = new Text(50 , 5 ,"0");
+        Text scoreT = new Text(65 , 5 , "score : 0");
+        Text numberOfBalls = new Text(325 , 50 , "number of balls : ");
+        degreeText = degreeT;
+        progressBarField = progressBar;
+        scoreText = scoreT;
+        iceShowerHbox.getChildren().add(text);
+        iceShowerHbox.getChildren().add(progressBar);
+        iceShowerHbox.getChildren().add(degreeLabelText);
+        iceShowerHbox.getChildren().add(degreeT);
+        iceShowerHbox.getChildren().add(scoreText);
+        gamePane.getChildren().add(numberOfBalls);
+        numberOfBallsText = numberOfBalls;
+        GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls().size());
+        gamePane.getChildren().add(iceShowerHbox);
+    }
+
+    public static void playMusic() {
+        Media media = new Media(new File(Paths.MUSICS_PATH.getPath() + "2.mp3").toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setCycleCount(-1);
+        if (GameMenu.isMute)
+            mediaPlayer.setMute(true);
+        songPlayer = mediaPlayer;
+    }
+
 
     @FXML
     public void initialize() {
