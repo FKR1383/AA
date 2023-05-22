@@ -87,6 +87,7 @@ public class GameMenu extends Application {
                 gamePane.getChildren().add(GameController.getGame().getOuterDisk());
                 gamePane.getChildren().add(GameController.getGame().getDiskWithNumber());
                 gamePane.getChildren().add(GameViewController.createMuteUnmuteIcon());
+                gamePane.getChildren().add(GameViewController.createMenuIcon());
                 addBallsToGame();
                 addLabelsToPane();
                 gamePane.requestFocus();

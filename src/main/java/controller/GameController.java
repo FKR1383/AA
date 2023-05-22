@@ -33,7 +33,7 @@ import static view.menu.GameMenu.*;
 public class GameController {
     public static Game game;
     private static int difficulty = 2;
-    private static RotateTransition rotateTransition;
+    public static RotateTransition rotateTransition;
     public static double nowAngle = 0;
     public static long time;
     private static boolean isIceMode = false;
@@ -538,7 +538,6 @@ public class GameController {
         nowAngle = nowAngle + ((double) milliSeconds) /
                 (timeOfRotation) * signOfRotation* 360;
         time = System.currentTimeMillis();
-        timeOfRotation = 5000;
         isIceMode = true;
         rotateTransition.stop();
         int durationInMillis = 0;
@@ -553,6 +552,7 @@ public class GameController {
                 durationInMillis = 3000;
             } break;
         }
+        timeOfRotation = durationInMillis;
         ImageView snowImage = new ImageView(new Image(
                 GameController.class.getResource("/images/icons/snowIcon.png").toExternalForm()));
         snowImage.setFitWidth(100);
