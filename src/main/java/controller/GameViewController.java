@@ -15,6 +15,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -26,6 +28,8 @@ import view.Paths;
 import view.menu.GameMenu;
 import view.menu.LoginMenu;
 import view.menu.MainMenu;
+
+import java.io.File;
 
 import static view.menu.GameMenu.*;
 
@@ -122,6 +126,14 @@ public class GameViewController {
             System.exit(0);
         });
 
+        helpKeys.setOnAction(e -> {
+            helpKeyEvents();
+        });
+
+        changeMusic.setOnAction(e -> {
+            changeMusicEvents();
+        });
+
 
 
         popupStage.show();
@@ -132,6 +144,82 @@ public class GameViewController {
                 GameController.timeOfRotation * 360 * GameController.signOfRotation;
         GameController.rotateTransition.pause();
 
+    }
+
+    public static void changeMusicEvents() {
+        VBox pauseRoot = new VBox(5);
+        pauseRoot.getChildren().add(new Label("Paused"));
+        pauseRoot.setStyle("-fx-background-color: rgba(255, 255, 255, 0.8);");
+        pauseRoot.setAlignment(Pos.CENTER);
+        pauseRoot.setPadding(new Insets(20));
+
+
+        Button music1 = new Button("Sacrifise - The Weeknd");
+        Button music2 = new Button("Industry Baby - Lil Nas X");
+        Button music3 = new Button("Old Town Road - Lil Nas X");
+        Button okButton = new Button("OK");
+
+        setHandleForChangeMusicButtons(music1 , 1);
+        setHandleForChangeMusicButtons(music2 , 2);
+        setHandleForChangeMusicButtons(music3 , 3);
+
+        pauseRoot.getChildren().add(okButton);
+        pauseRoot.getChildren().add(music1);
+        pauseRoot.getChildren().add(music2);
+        pauseRoot.getChildren().add(music3);
+
+        Stage popupStage2 = new Stage(StageStyle.TRANSPARENT);
+        popupStage2.initOwner(LoginMenu.stageOfProgram);
+        popupStage2.initModality(Modality.APPLICATION_MODAL);
+        popupStage2.setScene(new Scene(pauseRoot, Color.TRANSPARENT));
+        popupStage2.show();
+        okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                popupStage2.hide();
+            }
+        });
+    }
+
+    public static void helpKeyEvents(){
+        VBox pauseRoot2 = new VBox(5);
+        pauseRoot2.getChildren().add(new Label("Paused"));
+        pauseRoot2.setStyle("-fx-background-color: rgba(255, 255, 255, 0.8);");
+        pauseRoot2.setAlignment(Pos.CENTER);
+        pauseRoot2.setPadding(new Insets(20));
+        pauseRoot2.getChildren().add(new Label("Shoot : Space\nIce mode: " +
+                "Tab\nMove Right(Phase 4): " +
+                "Right arrow\nMove Left(Phase 4): Left arrow"));
+        Button okButton = new Button("OK");
+        pauseRoot2.getChildren().add(okButton);
+        Stage popupStage2 = new Stage(StageStyle.TRANSPARENT);
+        popupStage2.initOwner(LoginMenu.stageOfProgram);
+        popupStage2.initModality(Modality.APPLICATION_MODAL);
+        popupStage2.setScene(new Scene(pauseRoot2, Color.TRANSPARENT));
+        popupStage2.show();
+        okButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                popupStage2.hide();
+            }
+        });
+    }
+
+    public static void setHandleForChangeMusicButtons(Button button , int numberOfSong) {
+        button.setOnAction(e -> {
+            Media song = new Media(new File(Paths.MUSICS_PATH.getPath() + numberOfSong + ".mp3")
+                    .toURI().toString());
+            songPlayer.stop();
+            MediaPlayer mediaPlayer = new MediaPlayer(song);
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setCycleCount(-1);
+            if (GameMenu.isMute)
+                mediaPlayer.setMute(true);
+            else if (!isPlay) {
+                mediaPlayer.pause();
+            }
+            songPlayer = mediaPlayer;
+        });
     }
 
     public static void restartEvent(Stage popupStage) {
@@ -147,7 +235,7 @@ public class GameViewController {
     }
 
     public static Rectangle createPlayPauseIcon() {
-        Rectangle icon = new Rectangle(40 , 10 , 20 , 20);
+        Rectangle icon = new Rectangle(350 , 10 , 20 , 20);
         icon.setFill(new ImagePattern(new Image
                 (GameViewController.class.getResource("/images/icons/playIcon.png").toExternalForm())));
         icon.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -158,11 +246,13 @@ public class GameViewController {
                             (new ImagePattern(new Image(GameMenu.class.getResource
                                     ("/images/icons/pauseIcon.png").toExternalForm())));
                     isPlay = false;
+                    songPlayer.pause();
                 } else {
                     icon.setFill
                             (new ImagePattern(new Image(GameMenu.class.getResource
                                     ("/images/icons/playIcon.png").toExternalForm())));
-                    isPlay = false;
+                    isPlay = true;
+                    songPlayer.play();
                 }
             }
         });

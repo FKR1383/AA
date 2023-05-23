@@ -71,6 +71,8 @@ public class GameMenu extends Application {
         Rectangle mute_unmuteIcon = GameViewController.createMuteUnmuteIcon();
         pane.getChildren().add(mute_unmuteIcon);
 
+        gamePane.getChildren().add(GameViewController.createPlayPauseIcon());
+
         ballsText = GameViewController.createNumberField();
         pane.getChildren().add(ballsText);
         pane.getChildren().add(GameViewController.createNumberLabel());
@@ -88,6 +90,7 @@ public class GameMenu extends Application {
                 gamePane.getChildren().add(GameController.getGame().getDiskWithNumber());
                 gamePane.getChildren().add(GameViewController.createMuteUnmuteIcon());
                 gamePane.getChildren().add(GameViewController.createMenuIcon());
+                gamePane.getChildren().add(GameViewController.createPlayPauseIcon());
                 addBallsToGame();
                 addLabelsToPane();
                 gamePane.requestFocus();
