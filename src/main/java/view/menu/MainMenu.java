@@ -2,6 +2,7 @@ package view.menu;
 
 
 import controller.App;
+import controller.GameController;
 import controller.GameViewController;
 import controller.UserController;
 import javafx.application.Application;
@@ -87,6 +88,17 @@ public class MainMenu extends Application {
 
     public void startNewGame(MouseEvent mouseEvent) {
         try {
+            GameController.isDual = false;
+            new GameMenu().start(LoginMenu.stageOfProgram);
+        } catch (Exception e) {
+            System.out.println("an error occurred");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void startNewDualGame(MouseEvent mouseEvent) {
+        try {
+            GameController.isDual = true;
             new GameMenu().start(LoginMenu.stageOfProgram);
         } catch (Exception e) {
             System.out.println("an error occurred");

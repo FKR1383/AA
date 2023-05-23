@@ -15,6 +15,7 @@
     <center>
         <VBox alignment="CENTER" spacing="40" styleClass="mainMenuButtons">
             <Button text="New game" onMouseClicked="#startNewGame"/>
+            <Button text="New dual player game" onMouseClicked="#startNewDualGame"/>
             <Button text="Resuming previous game" onMouseClicked="#resumingPreviousGame"/>
             <Button text="Profile menu" onMouseClicked="#profileMenu" />
             <Button text="Scoreboard" onMouseClicked="#scoreBoardMenu"/>

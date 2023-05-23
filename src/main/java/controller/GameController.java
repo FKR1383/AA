@@ -43,6 +43,9 @@ public class GameController {
     public static boolean isPhase4 = false;
     public static int signOfRotation = 1;
     private static int musicsNumber = 1;
+    public static boolean isDual = false;
+    public static String secondUsername;
+    public static boolean isSecondPlayerPlaying = false;
 
     public static ArrayList<User> rankingOfUsers() {
         ArrayList<User> rankedUsers = new ArrayList<>(App.getAllUsers());
@@ -287,6 +290,18 @@ public class GameController {
             ball.setRadius(10);
             balls.add(ball);
         }
+        if (isDual) {
+            for (int i = numberOfBalls; i >= 1; i--) {
+                Ball ball = new Ball();
+                ball.setNumber(i);
+                Text text = new Text(String.format("%d", i));
+                text.setFill(Color.WHITE);
+                ball.setFill(Color.GRAY);
+                ball.setText(text);
+                ball.setRadius(10);
+                balls.add(ball);
+            }
+        }
         return balls;
     }
 
@@ -318,6 +333,8 @@ public class GameController {
         milliSeconds = System.currentTimeMillis() - time;
         Rod rod = new Rod();
         double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
+        if (isSecondPlayerPlaying)
+            angle += 180;
         firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
         firstBall.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
         firstBall.setRotate(-angle);
@@ -347,39 +364,49 @@ public class GameController {
     }
 
     public static void shoot() {
-        Ball firstBall = GameController.getGame().getBalls().get(0);
+        boolean releaseBall = false;
+        Ball firstBall = null;
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            ballGoingToUp(ball ,firstBall);
-            if (ball.equals(firstBall)) {
-                itr.remove();
+            if (!ball.getFill().equals(Color.GRAY)) {
+                if (firstBall == null)
+                    firstBall = ball;
+                ballGoingToUp(ball, firstBall);
+                releaseBall = true;
+                if (ball.equals(firstBall)) {
+                    itr.remove();
+                }
             }
         }
-        GameMenu.scoreText.setText(String.format("score : %d",game.getDifficulty() *
-                (game.getNumberOfBalls() - game.getBalls().size())));
-        GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
-                .size());
-        if (game.getBalls().size() <= 5) {
-            numberOfBallsText.setFill(Color.GREEN);
-        }
-        progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-        if (!isPhase2 && (double)(game.getNumberOfBalls()-game.getBalls().size()) / game.getNumberOfBalls()
-                >= 0.24) {
-            System.out.println("run");
-            GameController.runPhase2();
-            GameController.bigAndSmallBalls(1);
-        }
-        if (!isPhase3 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
-            >= 0.49) {
-            isPhase3 = true;
-            numberOfBallsText.setFill(Color.YELLOW);
-            GameController.runPhase3();
-        }
-        if (!isPhase4 && (double)(game.getNumberOfBalls()-game.getBalls().size())/game.getNumberOfBalls()
-            >= 0.74) {
-            isPhase4 = true;
-            GameController.runPhase4();
+        if (releaseBall) {
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
+                    GameController.game.getNumberOfBalls();
+            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
+                    (balls - game.getBalls().size())));
+            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                    .size());
+            if (GameController.game.getBalls().size() <= 5) {
+                numberOfBallsText.setFill(Color.GREEN);
+            }
+            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+            if (!isPhase2 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.24) {
+                System.out.println("run");
+                GameController.runPhase2();
+                GameController.bigAndSmallBalls(1);
+            }
+            if (!isPhase3 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.49) {
+                isPhase3 = true;
+                numberOfBallsText.setFill(Color.YELLOW);
+                GameController.runPhase3();
+            }
+            if (!isPhase4 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.74) {
+                isPhase4 = true;
+                GameController.runPhase4();
+            }
         }
 
     }
@@ -497,10 +524,21 @@ public class GameController {
         if (App.getCurrentUser() != null) {
             User user = App.getCurrentUser();
             int nowScore = user.getScoreOfDiff().get(GameController.getDifficulty() - 1);
-            nowScore += game.getDifficulty() * (game.getNumberOfBalls() - game.getBalls().size());
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls()*2 :
+                    GameController.game.getNumberOfBalls();
+            nowScore += game.getDifficulty() * (balls - game.getBalls().size());
             user.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             user.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
+            if (GameController.isDual) {
+                User secondUser = UserController.getUserByUsername(GameController.secondUsername);
+                if (secondUser != null) {
+                    nowScore = secondUser.getScoreOfDiff().get(GameController.getDifficulty() - 1);
+                    nowScore += game.getDifficulty() * (balls - game.getBalls().size());
+                    secondUser.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
+                    secondUser.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
+                }
+            }
             DBController.saveCurrentUser();
             DBController.saveUsers();
         }
@@ -654,26 +692,36 @@ public class GameController {
     }
 
     public static void shoot2() throws Exception {
-        Ball firstBall = GameController.getGame().getBalls().get(0);
+        boolean releaseBall = false;
+        Ball firstBall = null;
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            ballGoingToUp2(ball ,firstBall);
-            if (ball.equals(firstBall)) {
-                itr.remove();
+            if (!ball.getFill().equals(Color.GRAY)) {
+                if (firstBall == null)
+                    firstBall = ball;
+                releaseBall = true;
+                ballGoingToUp2(ball, firstBall);
+                if (ball.equals(firstBall)) {
+                    itr.remove();
+                }
             }
         }
-        GameMenu.scoreText.setText(String.format("score : %d",game.getDifficulty() *
-                (game.getNumberOfBalls() - game.getBalls().size())));
-        GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
-                .size());
-        if (GameController.game.getBalls().size() <= 5) {
-            numberOfBallsText.setFill(Color.GREEN);
-        }
-        progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-        checkCollide();
-        if (game.isEnd()) {
-            GameController.showState();
+        if (releaseBall) {
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
+                    GameController.game.getNumberOfBalls();
+            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
+                    (balls - game.getBalls().size())));
+            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                    .size());
+            if (GameController.game.getBalls().size() <= 5) {
+                numberOfBallsText.setFill(Color.GREEN);
+            }
+            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+            checkCollide();
+            if (game.isEnd()) {
+                GameController.showState();
+            }
         }
     }
 
@@ -704,5 +752,131 @@ public class GameController {
 
     public static void setDifficulty(int difficulty) {
         GameController.difficulty = difficulty;
+    }
+
+    public static void shoot3() {
+        boolean releaseBall = false;
+        Ball firstBall = null;
+        Iterator itr = GameController.getGame().getBalls().iterator();
+        while (itr.hasNext()) {
+            Ball ball = (Ball) itr.next();
+            if (ball.getFill().equals(Color.GRAY)) {
+                if (firstBall == null)
+                     firstBall = ball;
+                releaseBall = true;
+                ballGoingToUp3(ball, firstBall);
+                if (ball.equals(firstBall)) {
+                    itr.remove();
+                }
+            }
+        }
+        if (releaseBall) {
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
+                    GameController.game.getNumberOfBalls();
+            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
+                    (balls - game.getBalls().size())));
+            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                    .size());
+            if (GameController.game.getBalls().size() <= 5) {
+                numberOfBallsText.setFill(Color.GREEN);
+            }
+            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+            if (!isPhase2 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.24) {
+                System.out.println("run");
+                GameController.runPhase2();
+                GameController.bigAndSmallBalls(1);
+            }
+            if (!isPhase3 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.49) {
+                isPhase3 = true;
+                numberOfBallsText.setFill(Color.YELLOW);
+                GameController.runPhase3();
+            }
+            if (!isPhase4 && (double) (balls - game.getBalls().size()) / balls
+                    >= 0.74) {
+                isPhase4 = true;
+                GameController.runPhase4();
+            }
+        }
+    }
+
+    private static void ballGoingToUp3(Ball ball, Ball firstBall) {
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100) , ball);
+        translateTransition.setByY(+50);
+        TranslateTransition translateTransition2 = new TranslateTransition
+                (Duration.millis(100) , ball.getText());
+        translateTransition2.setByY(+50);
+        translateTransition.setCycleCount(1);
+        translateTransition2.setCycleCount(1);
+        translateTransition2.play();
+        translateTransition.play();
+        translateTransition.setOnFinished(e -> {
+            translateTransition2.stop();
+            translateTransition.stop();
+            if (ball.equals(firstBall)) {
+                try {
+                    isSecondPlayerPlaying = true;
+                    checkEndgame(ball , firstBall);
+                    isSecondPlayerPlaying = false;
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    }
+
+    public static void shoot4() throws Exception {
+        boolean releaseBall = false;
+        Ball firstBall = null;
+        Iterator itr = GameController.getGame().getBalls().iterator();
+        while (itr.hasNext()) {
+            Ball ball = (Ball) itr.next();
+            if (ball.getFill().equals(Color.GRAY)) {
+                if (firstBall == null)
+                    firstBall = ball;
+                releaseBall = true;
+                ballGoingToUp4(ball, firstBall);
+                if (ball.equals(firstBall)) {
+                    itr.remove();
+                }
+            }
+        }
+        if (releaseBall) {
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
+                    GameController.game.getNumberOfBalls();
+            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
+                    (balls - game.getBalls().size())));
+            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                    .size());
+            if (GameController.game.getBalls().size() <= 5) {
+                numberOfBallsText.setFill(Color.GREEN);
+            }
+            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+            checkCollide();
+            if (game.isEnd()) {
+                GameController.showState();
+            }
+        }
+    }
+
+    private static void ballGoingToUp4(Ball ball, Ball firstBall) {
+        if (ball.equals(firstBall)) {
+            new MoveOfFirstBallInWindAnimation(ball , Integer.parseInt(degreeText.getText()));
+        } else {
+            TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), ball);
+            translateTransition.setByY(+50);
+            TranslateTransition translateTransition2 = new TranslateTransition
+                    (Duration.millis(100), ball.getText());
+            translateTransition2.setByY(+50);
+            translateTransition.setCycleCount(1);
+            translateTransition2.setCycleCount(1);
+            translateTransition2.play();
+            translateTransition.play();
+            translateTransition.setOnFinished(e -> {
+                translateTransition2.stop();
+                translateTransition.stop();
+            });
+        }
     }
 }

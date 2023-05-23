@@ -60,6 +60,7 @@ public class GameMenu extends Application {
     public static Text numberOfBallsText;
     public static Label timer;
     public static TimerAnimation timerTransition;
+    public static TextField secondUsernameField;
     @Override
     public void start(Stage stage) throws Exception {
         URL gameMenuFXMLUrl = GameMenu.class.getResource(Paths.GAME_MENU_FXML_FILE.getPath());
@@ -77,8 +78,21 @@ public class GameMenu extends Application {
         gamePane.getChildren().add(GameViewController.createPlayPauseIcon());
 
         ballsText = GameViewController.createNumberField();
+
         pane.getChildren().add(ballsText);
         pane.getChildren().add(GameViewController.createNumberLabel());
+        if (GameController.isDual) {
+            Label secondUser = new Label("Second User : ");
+            TextField secondUsername = new TextField("");
+            secondUser.setTranslateY(100);
+            secondUser.setTranslateX(150);
+            secondUsername.setTranslateY(120);
+            secondUsername.setTranslateX(150);
+            secondUsernameField = secondUsername;
+            pane.getChildren().add(secondUser);
+            pane.getChildren().add(secondUsername);
+        }
+
         createButtons();
         selectingMapHandling(map1Button , 1);
         selectingMapHandling(map2Button , 2);
@@ -87,6 +101,8 @@ public class GameMenu extends Application {
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                if (GameController.isDual)
+                    GameController.secondUsername = secondUsernameField.getText();
                 GameController.createGame(numberOfMap , Integer.parseInt(ballsText.getText()));
                 gamePane.getChildren().clear();
                 gamePane.getChildren().add(GameController.getGame().getOuterDisk());
@@ -130,6 +146,18 @@ public class GameMenu extends Application {
                         } else if (keyEvent.getCode().getName().equals("Right")) {
                             if (GameController.isPhase4)
                                 GameController.moveRight();
+                        } else if (keyEvent.getCode().getName().equals("Enter")
+                        && GameController.isDual && !GameController.getGame().isEnd()) {
+                            runShootSound();
+                            if (!GameController.isPhase4) {
+                                GameController.shoot3();
+                            } else {
+                                try {
+                                    GameController.shoot4();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
                         }
                     }
                 });
@@ -184,8 +212,7 @@ public class GameMenu extends Application {
 
     public void addBallsToGame() {
         int startY = 650;
-        for (int i = 0; i != GameController.getGame().getBalls().size(); i++) {
-            Ball ball = (Ball)(GameController.getGame().getBalls().get(i));
+        for (int i = 0; i != GameController.getGame().getNumberOfBalls(); i++) {
             Ball stackBall = GameController.getGame().getBalls().get(i);
             stackBall.setTranslateX(215);
             stackBall.setTranslateY(startY);
@@ -194,6 +221,20 @@ public class GameMenu extends Application {
             startY += 50;
             gamePane.getChildren().add(GameController.getGame().getBalls().get(i));
             gamePane.getChildren().add(GameController.getGame().getBalls().get(i).getText());
+        }
+        if (GameController.isDual) {
+            startY = 150;
+            for (int i = GameController.game.getNumberOfBalls()
+                 ; i != 2*GameController.getGame().getNumberOfBalls(); i++) {
+                Ball stackBall = GameController.getGame().getBalls().get(i);
+                stackBall.setTranslateX(215);
+                stackBall.setTranslateY(startY);
+                stackBall.getText().setTranslateX(208);
+                stackBall.getText().setTranslateY(startY+3);
+                startY -= 50;
+                gamePane.getChildren().add(GameController.getGame().getBalls().get(i));
+                gamePane.getChildren().add(GameController.getGame().getBalls().get(i).getText());
+            }
         }
     }
 

@@ -113,8 +113,10 @@ public class GameViewController {
 
         resume.setOnAction(event -> {
             gamePane.setEffect(null);
-            GameController.rotateTransition.play();
-            timerTransition.play();
+            if (!GameController.getGame().isEnd()) {
+                GameController.rotateTransition.play();
+                timerTransition.play();
+            }
             GameController.time = System.currentTimeMillis();
             popupStage.hide();
         });
