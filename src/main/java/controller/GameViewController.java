@@ -114,6 +114,7 @@ public class GameViewController {
         resume.setOnAction(event -> {
             gamePane.setEffect(null);
             GameController.rotateTransition.play();
+            timerTransition.play();
             GameController.time = System.currentTimeMillis();
             popupStage.hide();
         });
@@ -143,7 +144,7 @@ public class GameViewController {
         GameController.nowAngle += (double) (System.currentTimeMillis() - GameController.time) /
                 GameController.timeOfRotation * 360 * GameController.signOfRotation;
         GameController.rotateTransition.pause();
-
+        timerTransition.pause();
     }
 
     public static void changeMusicEvents() {
@@ -305,6 +306,13 @@ public class GameViewController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public static Label showTimer() {
+        Label timer = new Label("01:00");
+        timer.setTranslateX(5);
+        timer.setTranslateY(30);
+        return timer;
     }
 
 

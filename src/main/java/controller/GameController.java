@@ -600,6 +600,7 @@ public class GameController {
 
     public static void showState() throws Exception {
         rotateTransition.stop();
+        timerTransition.stop();
         if (game.isWin())
             GameController.showWin();
         else

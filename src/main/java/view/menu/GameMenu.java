@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Game.Ball;
 import model.Game.Game;
+import view.Animation.TimerAnimation;
 import view.Paths;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -57,6 +58,8 @@ public class GameMenu extends Application {
     public static MediaPlayer songPlayer;
     public static Text scoreText;
     public static Text numberOfBallsText;
+    public static Label timer;
+    public static TimerAnimation timerTransition;
     @Override
     public void start(Stage stage) throws Exception {
         URL gameMenuFXMLUrl = GameMenu.class.getResource(Paths.GAME_MENU_FXML_FILE.getPath());
@@ -91,6 +94,9 @@ public class GameMenu extends Application {
                 gamePane.getChildren().add(GameViewController.createMuteUnmuteIcon());
                 gamePane.getChildren().add(GameViewController.createMenuIcon());
                 gamePane.getChildren().add(GameViewController.createPlayPauseIcon());
+                timer = GameViewController.showTimer();
+                gamePane.getChildren().add(timer);
+                timerTransition = new TimerAnimation();
                 addBallsToGame();
                 addLabelsToPane();
                 gamePane.requestFocus();
