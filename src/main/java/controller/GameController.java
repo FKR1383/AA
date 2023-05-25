@@ -2,8 +2,12 @@ package controller;
 
 import javafx.animation.*;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -11,6 +15,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 
@@ -637,25 +644,26 @@ public class GameController {
         Transition transition = new ChangeSizeOfBallsAnimation(index , game.getDiskWithNumber());
     }
 
-    public static void showState() throws Exception {
-        rotateTransition.stop();
-        timerTransition.stop();
-        if (game.isWin())
-            GameController.showWin();
-        else
-            GameController.showLose();
+    public static void showPopupPage() {
+        VBox pauseRoot = new VBox(5);
+        pauseRoot.getChildren().add(new Label("THE END!"));
+        pauseRoot.setStyle("-fx-background-color: rgba(255, 255, 255, 0.8);");
+        pauseRoot.setAlignment(Pos.CENTER);
+        pauseRoot.setPadding(new Insets(20));
+
         Label label = new Label("");
         if (GameController.game.isWin())
             label.setText("You Win!\n" + scoreText.getText() + " scores reached!");
         else
             label.setText("You Lose!\n" + scoreText.getText() + " scores reached!");
         Button button = new Button("OK!");
-        VBox vBox = new VBox();
-        vBox.getChildren().add(label);
-        vBox.getChildren().add(button);
-        gamePane.getChildren().add(vBox);
-        vBox.setTranslateX(20);
-        vBox.setTranslateY(20);
+        pauseRoot.getChildren().add(label);
+        pauseRoot.getChildren().add(button);
+
+        Stage popupStage = new Stage(StageStyle.TRANSPARENT);
+        popupStage.initOwner(LoginMenu.stageOfProgram);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setScene(new Scene(pauseRoot, Color.TRANSPARENT));
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -663,11 +671,26 @@ public class GameController {
                     GameController.game.setDiskWithNumber(null);
                     GameController.game.setBalls(null);
                     new MainMenu().start(LoginMenu.stageOfProgram);
+                    popupStage.hide();
                 } catch (Exception e) {
                     System.out.println("an error occurred");
                 }
             }
         });
+
+
+
+        popupStage.show();
+    }
+
+    public static void showState() throws Exception {
+        rotateTransition.stop();
+        timerTransition.stop();
+        if (game.isWin())
+            GameController.showWin();
+        else
+            GameController.showLose();
+        showPopupPage();
     }
 
     public static void moveRight() {

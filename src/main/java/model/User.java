@@ -143,11 +143,5 @@ public class User implements Comparable<User>{
     public void setLastGames(String[] lastGames) {
         this.lastGames = lastGames;
     }
-    /*public Game getGame() {
-        return game;
-    }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }*/
 }
