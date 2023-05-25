@@ -42,8 +42,7 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
         this.play();
     }
 
-    @Override
-    protected void interpolate(double v) {
+    private void changeLocationOfBall() {
         if (ball.getFill().equals(Color.DIMGREY)) {
             ball.setTranslateX(ball.getTranslateX() - 3*Math.sin(Math.PI/180*angle));
             ball.setTranslateY(ball.getTranslateY() + 3*Math.cos(Math.PI/180*angle));
@@ -55,6 +54,56 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
             ball.getText().setTranslateX(ball.getText().getTranslateX() + 3*Math.sin(Math.PI/180*angle));
             ball.getText().setTranslateY(ball.getText().getTranslateY() - 3*Math.cos(Math.PI/180*angle));
         }
+    }
+
+    private void putBallInDisk() {
+        double x = ball.getTranslateX() - game.getOuterDisk().getTranslateX();
+        double y = ball.getTranslateY() - game.getOuterDisk().getTranslateY();
+        double angle2 = Math.atan(Math.abs(x)/Math.abs(y));
+        if (x < 0)
+            angle2 *= -1;
+        if (ball.getFill().equals(Color.DIMGREY)) {
+            angle2 *= -1;
+            angle2 += Math.PI;
+        }
+        long milliSeconds = 0;
+        milliSeconds = System.currentTimeMillis() - GameController.time;
+        double angle = GameController.nowAngle +
+                ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
+        ball.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle) + angle2));
+        ball.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle) + angle2));
+        ball.setRotate(-angle-angle2*180/Math.PI);
+        ball.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle) + angle2));
+        ball.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle) + angle2));
+        ball.getText().setRotate(-angle-angle2*180/Math.PI);
+        createRodAndPutBall(angle , angle2);
+    }
+
+    private void createRodAndPutBall(double angle , double angle2) {
+        Rod rod = new Rod();
+        if (ball.getFill().equals(Color.DIMGREY))
+            rod.setFill(Color.DIMGREY);
+        Text text = (Text) game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        game.getDiskWithNumber().getChildren().remove
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        Disk disk = (Disk) game.getDiskWithNumber().getChildren().get
+                (game.getDiskWithNumber().getChildren().size() - 1);
+        game.getDiskWithNumber().getChildren().remove(disk);
+        game.getDiskWithNumber().getChildren().add(rod);
+        game.getDiskWithNumber().getChildren().add(ball);
+        game.getDiskWithNumber().getChildren().add(ball.getText());
+        game.getDiskWithNumber().getChildren().add(disk);
+        game.getDiskWithNumber().getChildren().add(text);
+        rod.setTranslateX((double) 100 * Math.sin(Math.toRadians(angle) + angle2));
+        rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle) + angle2));
+        rod.setScaleY(200);
+        rod.setRotate(-angle-angle2*180/Math.PI);
+    }
+
+    @Override
+    protected void interpolate(double v) {
+        changeLocationOfBall();
         if (ball.getTranslateX() <= 25 || ball.getTranslateX() >= 425 && !game.isEnd()) {
             GameController.getGame().setEnd(true);
             GameController.getGame().setWin(false);
@@ -70,46 +119,7 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
                 GameController.getGame().getOuterDisk().getTranslateX() ,
                 GameController.getGame().getOuterDisk().getTranslateY() ,
                 ball.getRadius() , GameController.getGame().getOuterDisk().getRadius())) {
-            System.out.println("barkhord");
-            double x = ball.getTranslateX() - game.getOuterDisk().getTranslateX();
-            double y = ball.getTranslateY() - game.getOuterDisk().getTranslateY();
-            System.out.println(x + " " + y);
-            double angle2 = Math.atan(Math.abs(x)/Math.abs(y));
-            if (x < 0)
-                angle2 *= -1;
-            if (ball.getFill().equals(Color.DIMGREY)) {
-                angle2 *= -1;
-                angle2 += Math.PI;
-            }
-            long milliSeconds = 0;
-            milliSeconds = System.currentTimeMillis() - GameController.time;
-            double angle = GameController.nowAngle +
-                    ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
-            ball.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle) + angle2)); // 2.5
-                ball.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle) + angle2)); // 2.5
-                ball.setRotate(-angle-angle2*180/Math.PI);
-                ball.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle) + angle2)); // 2.5
-                ball.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle) + angle2)); // 2.5
-                ball.getText().setRotate(-angle-angle2*180/Math.PI);
-            Rod rod = new Rod();
-            if (ball.getFill().equals(Color.DIMGREY))
-                rod.setFill(Color.DIMGREY);
-            Text text = (Text) game.getDiskWithNumber().getChildren().get
-                    (game.getDiskWithNumber().getChildren().size() - 1);
-            game.getDiskWithNumber().getChildren().remove
-                    (game.getDiskWithNumber().getChildren().size() - 1);
-            Disk disk = (Disk) game.getDiskWithNumber().getChildren().get
-                    (game.getDiskWithNumber().getChildren().size() - 1);
-            game.getDiskWithNumber().getChildren().remove(disk);
-            game.getDiskWithNumber().getChildren().add(rod);
-            game.getDiskWithNumber().getChildren().add(ball);
-            game.getDiskWithNumber().getChildren().add(ball.getText());
-            game.getDiskWithNumber().getChildren().add(disk);
-            game.getDiskWithNumber().getChildren().add(text);
-                rod.setTranslateX((double) 100 * Math.sin(Math.toRadians(angle) + angle2));
-                rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle) + angle2));
-                rod.setScaleY(200);
-                rod.setRotate(-angle-angle2*180/Math.PI);
+            putBallInDisk();
             try {
                 System.out.println("check collide in move of first of ball in collide (correct shoot)");
                 checkCollide();

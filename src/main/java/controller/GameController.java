@@ -88,13 +88,13 @@ public class GameController {
         Game game = new Game(difficulty, "", createBalls(numberOfBalls)
                 , stackPane, numberOfBalls, rotatingByDifficulty(),
                 windSpeedByDifficulty(), iceTimerByDifficulty());
-        OuterDisk outerDisk = new OuterDisk();
-        outerDisk.setTranslateX(225);
-        outerDisk.setTranslateY(400);
-        outerDisk.setRadius(200);
         GameController.setGame(game);
+        OuterDisk outerDisk = createOuterDisk();
         game.setOuterDisk(outerDisk);
-        outerDisk.setOpacity(0);
+        settingsOfCreatingGame();
+    }
+
+    private static void settingsOfCreatingGame() {
         nowAngle = 0;
         game.setRotateTransition(rotateTransition);
         isIceMode = false;
@@ -104,6 +104,16 @@ public class GameController {
         isPhase4 = false;
         time = System.currentTimeMillis();
         signOfRotation = 1;
+    }
+
+    private static OuterDisk createOuterDisk() {
+        OuterDisk outerDisk = new OuterDisk();
+        outerDisk.setTranslateX(225);
+        outerDisk.setTranslateY(400);
+        outerDisk.setRadius(200);
+        GameController.setGame(game);
+        outerDisk.setOpacity(0);
+        return outerDisk;
     }
 
     private static double windSpeedByDifficulty() {
@@ -142,7 +152,7 @@ public class GameController {
         return 0;
     }
 
-    public static void runPhase2() {
+    private static void changeDirectionAndTextInPhase2() {
         if (!isPhase2) {
             ((Text)(game.getDiskWithNumber().getChildren().get
                     (game.getDiskWithNumber().getChildren().size()-1))).setText("2");
@@ -152,6 +162,10 @@ public class GameController {
         nowAngle += ((double)miliseconds)/timeOfRotation * signOfRotation * 360;
         time = System.currentTimeMillis();
         signOfRotation = -signOfRotation;
+    }
+
+    public static void runPhase2() {
+        changeDirectionAndTextInPhase2();
         rotateTransition.stop();
         rotateTransition = new RotateTransition(Duration.millis(timeOfRotation) ,
                 getGame().getDiskWithNumber());
@@ -183,21 +197,7 @@ public class GameController {
         disk.getChildren().add(ball);
     }
 
-    private static StackPane createDiskMap1() {
-        StackPane stackPane = new StackPane();
-        Disk disk = new Disk();
-        disk.setRadius(80);
-        Text text = new Text("1");
-        text.setScaleX(5);
-        text.setScaleY(5);
-        createBallAndRod(Math.PI/4 , stackPane);
-        createBallAndRod(Math.PI/4*2 , stackPane);
-        createBallAndRod(Math.PI/4*3 , stackPane);
-        createBallAndRod(Math.PI , stackPane);
-        createBallAndRod(Math.PI/4*5 , stackPane);
-        createBallAndRod(Math.PI/2*3, stackPane);
-        createBallAndRod(Math.PI/4*7, stackPane);
-        createBallAndRod(Math.PI/4*8, stackPane);
+    private static void setColorInMap1(Text text , Disk disk) {
         Color color = null;
         if (GameViewController.isBlackWhiteThemeOn) {
             color = Color.BLACK;
@@ -206,6 +206,28 @@ public class GameController {
             color = Color.rgb(100, 200, 5);
         }
         disk.setFill(color);
+    }
+
+    private static void createBallsInMap1(StackPane stackPane) {
+        createBallAndRod(Math.PI/4 , stackPane);
+        createBallAndRod(Math.PI/4*2 , stackPane);
+        createBallAndRod(Math.PI/4*3 , stackPane);
+        createBallAndRod(Math.PI , stackPane);
+        createBallAndRod(Math.PI/4*5 , stackPane);
+        createBallAndRod(Math.PI/2*3, stackPane);
+        createBallAndRod(Math.PI/4*7, stackPane);
+        createBallAndRod(Math.PI/4*8, stackPane);
+    }
+
+    private static StackPane createDiskMap1() {
+        StackPane stackPane = new StackPane();
+        Disk disk = new Disk();
+        disk.setRadius(80);
+        Text text = new Text("1");
+        text.setScaleX(5);
+        text.setScaleY(5);
+        createBallsInMap1(stackPane);
+        setColorInMap1(text , disk);
         stackPane.getChildren().add(disk);
         stackPane.getChildren().add(text);
         stackPane.setTranslateX(145);
@@ -213,13 +235,7 @@ public class GameController {
         settingRotateTransition(stackPane);
         return stackPane;
     }
-    private static StackPane createDiskMap3() {
-        StackPane stackPane = new StackPane();
-        Disk disk = new Disk();
-        disk.setRadius(80);
-        Text text = new Text("1");
-        text.setScaleX(5);
-        text.setScaleY(5);
+    private static void createBallsInMap3(StackPane stackPane) {
         createBallAndRod(Math.PI/3 , stackPane);
         createBallAndRod(Math.toRadians(110) , stackPane);
         createBallAndRod(Math.toRadians(130) , stackPane);
@@ -229,6 +245,9 @@ public class GameController {
         createBallAndRod(Math.PI/3*5 , stackPane);
         createBallAndRod(Math.toRadians(10) , stackPane);
         createBallAndRod(Math.toRadians(-10) , stackPane);
+    }
+
+    private static void setColorInMap3(Text text , Disk disk) {
         Color color = null;
         if (GameViewController.isBlackWhiteThemeOn) {
             color = Color.BLACK;
@@ -237,12 +256,42 @@ public class GameController {
             color = Color.rgb(250, 200, 0);
         }
         disk.setFill(color);
+    }
+    private static StackPane createDiskMap3() {
+        StackPane stackPane = new StackPane();
+        Disk disk = new Disk();
+        disk.setRadius(80);
+        Text text = new Text("1");
+        text.setScaleX(5);
+        text.setScaleY(5);
+        createBallsInMap3(stackPane);
+        setColorInMap3(text , disk);
         stackPane.getChildren().add(disk);
         stackPane.getChildren().add(text);
         stackPane.setTranslateX(145);
         stackPane.setTranslateY(320);
         settingRotateTransition(stackPane);
         return stackPane;
+    }
+
+    private static void createBallsInMap2(StackPane stackPane) {
+        createBallAndRod(Math.PI/2 , stackPane);
+        createBallAndRod(Math.PI/6 , stackPane);
+        createBallAndRod(-Math.PI/6 , stackPane);
+        createBallAndRod(Math.PI/6*5 , stackPane);
+        createBallAndRod(-Math.PI/2 , stackPane);
+        createBallAndRod(-Math.PI/6*5, stackPane);
+    }
+
+    private static void setColorInMap2(Text text , Disk disk) {
+        Color color = null;
+        if (GameViewController.isBlackWhiteThemeOn) {
+            color = Color.BLACK;
+            text.setFill(Color.WHITE);
+        } else {
+            color = Color.rgb(225, 0, 0);
+        }
+        disk.setFill(color);
     }
 
     private static StackPane createDiskMap2() {
@@ -252,20 +301,8 @@ public class GameController {
         Text text = new Text("1");
         text.setScaleX(5);
         text.setScaleY(5);
-        createBallAndRod(Math.PI/2 , stackPane);
-        createBallAndRod(Math.PI/6 , stackPane);
-        createBallAndRod(-Math.PI/6 , stackPane);
-        createBallAndRod(Math.PI/6*5 , stackPane);
-        createBallAndRod(-Math.PI/2 , stackPane);
-        createBallAndRod(-Math.PI/6*5, stackPane);
-        Color color = null;
-        if (GameViewController.isBlackWhiteThemeOn) {
-            color = Color.BLACK;
-            text.setFill(Color.WHITE);
-        } else {
-            color = Color.rgb(225, 0, 0);
-        }
-        disk.setFill(color);
+        createBallsInMap2(stackPane);
+        setColorInMap2(text , disk);
         stackPane.getChildren().add(disk);
         stackPane.getChildren().add(text);
         stackPane.setTranslateX(145);
@@ -328,7 +365,6 @@ public class GameController {
             translateTransition.stop();
             if (ball.equals(firstBall)) {
                 try {
-                    System.out.println("check end game in ball going 1");
                     checkEndgame(ball , firstBall);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
@@ -337,24 +373,37 @@ public class GameController {
         });
 
     }
-    public static void checkEndgame(Ball ball , Ball firstBall) throws Exception {
-        long milliSeconds = 0;
-        milliSeconds = System.currentTimeMillis() - time;
+
+    private static Rod createRod(double angle) {
         Rod rod = new Rod();
-        double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
-        if (isSecondPlayerPlaying)
-            angle += 180;
-        firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
-        firstBall.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
-        firstBall.setRotate(-angle);
-        firstBall.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle))); // 2.5
-        firstBall.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle))); // 2.5
-        firstBall.getText().setRotate(-angle);
         rod.setTranslateX((double) 100 * Math.sin(Math.toRadians(angle)));
         rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle)));
         rod.setScaleY(200);
         rod.setRotate(-angle);
         rod.setFill(Color.DIMGREY);
+        return rod;
+    }
+
+    private static void changePositionOfFirstBall(Ball firstBall , double angle) {
+        firstBall.setTranslateX((double) 200 * Math.sin(Math.toRadians(angle)));
+        firstBall.setTranslateY((double) 200 * Math.cos(Math.toRadians(angle)));
+        firstBall.setRotate(-angle);
+        firstBall.getText().setTranslateX((double) 200 * Math.sin(Math.toRadians(angle)));
+        firstBall.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle)));
+        firstBall.getText().setRotate(-angle);
+    }
+
+    private static double calculateAngle() {
+        long milliSeconds = 0;
+        milliSeconds = System.currentTimeMillis() - time;
+        double angle = nowAngle + ((double) milliSeconds) / (timeOfRotation) * 360*signOfRotation;
+        if (isSecondPlayerPlaying)
+            angle += 180;
+        return angle;
+    }
+    public static void checkEndgame(Ball ball , Ball firstBall) throws Exception {
+        double angle = calculateAngle();
+        changePositionOfFirstBall(firstBall , angle);
         Text text = (Text) game.getDiskWithNumber().getChildren().get
                 (game.getDiskWithNumber().getChildren().size() - 1);
         game.getDiskWithNumber().getChildren().remove
@@ -362,12 +411,11 @@ public class GameController {
         Disk disk = (Disk) game.getDiskWithNumber().getChildren().get
                 (game.getDiskWithNumber().getChildren().size() - 1);
         game.getDiskWithNumber().getChildren().remove(disk);
-        game.getDiskWithNumber().getChildren().add(rod);
+        game.getDiskWithNumber().getChildren().add(createRod(angle));
         game.getDiskWithNumber().getChildren().add(firstBall);
         game.getDiskWithNumber().getChildren().add(firstBall.getText());
         game.getDiskWithNumber().getChildren().add(disk);
         game.getDiskWithNumber().getChildren().add(text);
-        System.out.println("check collide in check end game");
         checkCollide();
     }
 
@@ -387,6 +435,10 @@ public class GameController {
                 }
             }
         }
+        phaseChecking(releaseBall);
+    }
+
+    private static void phaseChecking(boolean releaseBall) {
         if (releaseBall) {
             int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
                     GameController.game.getNumberOfBalls();
@@ -416,7 +468,6 @@ public class GameController {
                 GameController.runPhase4();
             }
         }
-
     }
 
     private static void runPhase4() {
@@ -425,9 +476,7 @@ public class GameController {
         GameController.changingDegree();
     }
 
-    private static void changingDegree() {
-        if (!isPhase4)
-            return;
+    private static int setDuration() {
         int durationInMillis = 0;
         switch (GameController.getDifficulty()) {
             case 1 : {
@@ -440,6 +489,13 @@ public class GameController {
                 durationInMillis = 2000;
             } break;
         }
+        return durationInMillis;
+    }
+
+    private static void changingDegree() {
+        if (!isPhase4)
+            return;
+        int durationInMillis = setDuration();
         RotateTransition degreeChanging = new RotateTransition(Duration.millis(5000)
         , GameController.getGame().getOuterDisk());
         degreeChanging.setCycleCount(1);
@@ -462,7 +518,6 @@ public class GameController {
     }
 
     public static void showWin() {
-        //rotateTransition.stop();
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Win");
         GameController.distributionOfScore();
@@ -472,13 +527,10 @@ public class GameController {
         for (int i = 0; i != game.getDiskWithNumber().getChildren().size(); i++) {
             if (game.getDiskWithNumber().getChildren().get(i) instanceof Ball) {
                 Ball o = (Ball) game.getDiskWithNumber().getChildren().get(i);
-                System.out.println("balling");
                 if (!ball.equals(o) && isCollide(ball.getTranslateX() , ball.getTranslateY(),
                         o.getTranslateX() , o.getTranslateY() , ball.getRadius())) {
                     game.setEnd(true);
                     game.setWin(false);
-                    System.out.println("Lose in check collide 2");
-                    System.out.println("collide");
                     return true;
                 }
             }
@@ -486,7 +538,6 @@ public class GameController {
         if (game.getBalls().size() == 0) {
             game.setEnd(true);
             game.setWin(true);
-            System.out.println("Win in check collide 2");
             return true;
         }
         return false;
@@ -506,7 +557,6 @@ public class GameController {
                                 first.getRadius())) {
                             game.setEnd(true);
                             game.setWin(false);
-                            System.out.println("Lose in check collide");
                             showState();
                             return true;
                         }
@@ -517,13 +567,25 @@ public class GameController {
             if (game.getBalls().size() == 0) {
                 game.setEnd(true);
                 game.setWin(true);
-                System.out.println("Win in check collide");
                 showState();
                 return false;
             }
             return false;
         }
         return false;
+    }
+
+    private static void dualPlayerScoring(int balls , int nowScore ,DateTimeFormatter formatter) {
+        if (GameController.isDual) {
+            User secondUser = UserController.getUserByUsername(GameController.secondUsername);
+            if (secondUser != null) {
+                nowScore = secondUser.getScoreOfDiff().get(GameController.getDifficulty() - 1);
+                nowScore += game.getDifficulty() * (balls - game.getBalls().size());
+                secondUser.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
+                secondUser.getLastGames()[GameController.difficulty-1] =
+                        LocalDateTime.now().format(formatter);
+            }
+        }
     }
 
 
@@ -537,23 +599,13 @@ public class GameController {
             user.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             user.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
-            if (GameController.isDual) {
-                User secondUser = UserController.getUserByUsername(GameController.secondUsername);
-                if (secondUser != null) {
-                    nowScore = secondUser.getScoreOfDiff().get(GameController.getDifficulty() - 1);
-                    nowScore += game.getDifficulty() * (balls - game.getBalls().size());
-                    secondUser.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
-                    secondUser.getLastGames()[GameController.difficulty-1] =
-                            LocalDateTime.now().format(formatter);
-                }
-            }
+            dualPlayerScoring(balls , nowScore , formatter);
             DBController.saveCurrentUser();
             DBController.saveUsers();
         }
     }
 
     public static void showLose() {
-        //rotateTransition.stop();
         gamePane.getStyleClass().remove("Background");
         gamePane.getStyleClass().add("Background_Lose");
         GameController.distributionOfScore();
@@ -579,13 +631,7 @@ public class GameController {
         GameController.isIceMode = isIceMode;
     }
 
-    public static void iceMode() throws InterruptedException {
-        long milliSeconds = System.currentTimeMillis() - time;
-        nowAngle = nowAngle + ((double) milliSeconds) /
-                (timeOfRotation) * signOfRotation* 360;
-        time = System.currentTimeMillis();
-        isIceMode = true;
-        rotateTransition.stop();
+    private static int setDurationInIceMode() {
         int durationInMillis = 0;
         switch (GameController.difficulty) {
             case 1 : {
@@ -598,9 +644,10 @@ public class GameController {
                 durationInMillis = 3000;
             } break;
         }
-        timeOfRotation = durationInMillis;
-        ImageView snowImage = new ImageView(new Image(
-                GameController.class.getResource("/images/icons/snowIcon.png").toExternalForm()));
+        return durationInMillis;
+    }
+
+    private static FadeTransition setSnowIconAndTransition(ImageView snowImage) {
         snowImage.setFitWidth(100);
         snowImage.setFitHeight(100);
         snowImage.setTranslateX(175);
@@ -611,6 +658,19 @@ public class GameController {
         fadeTransition.setFromValue(10);
         fadeTransition.setToValue(0.1);
         fadeTransition.play();
+        return fadeTransition;
+    }
+
+    private static void updateDegree() {
+        long milliSecond = System.currentTimeMillis() - time;
+        nowAngle = nowAngle + signOfRotation * ((double) milliSecond) /
+                ((double) timeOfRotation) * 360;
+        time = System.currentTimeMillis();
+        timeOfRotation = 15000 / GameController.rotatingByDifficulty();
+    }
+
+    private static void setAnimationInIceMode(FadeTransition fadeTransition ,
+                                              int durationInMillis , ImageView snowImage) {
         rotateTransition.setDuration(Duration.millis(durationInMillis));
         rotateTransition.setFromAngle(nowAngle);
         rotateTransition.setCycleCount(2);
@@ -620,17 +680,28 @@ public class GameController {
             rotateTransition.stop();
             fadeTransition.stop();
             gamePane.getChildren().remove(snowImage);
-            long milliSecond = System.currentTimeMillis() - time;
-            nowAngle = nowAngle + signOfRotation * ((double) milliSecond) /
-                    ((double) timeOfRotation) * 360;
-            time = System.currentTimeMillis();
-            timeOfRotation = 15000 / GameController.rotatingByDifficulty();
-            rotateTransition.setDuration(Duration.millis(15000 / GameController.rotatingByDifficulty()));
+            updateDegree();
+            rotateTransition.setDuration(Duration.millis
+                    (15000 / GameController.rotatingByDifficulty()));
             rotateTransition.setFromAngle(nowAngle);
             rotateTransition.setToAngle(nowAngle + (signOfRotation) * 360);
             rotateTransition.setCycleCount(Timeline.INDEFINITE);
             rotateTransition.play();
         });
+    }
+    public static void iceMode() throws InterruptedException {
+        long milliSeconds = System.currentTimeMillis() - time;
+        nowAngle = nowAngle + ((double) milliSeconds) /
+                (timeOfRotation) * signOfRotation* 360;
+        time = System.currentTimeMillis();
+        isIceMode = true;
+        rotateTransition.stop();
+        int durationInMillis = setDurationInIceMode();
+        timeOfRotation = durationInMillis;
+        ImageView snowImage = new ImageView(new Image(
+                GameController.class.getResource("/images/icons/snowIcon.png").toExternalForm()));
+        FadeTransition fadeTransition = setSnowIconAndTransition(snowImage);
+        setAnimationInIceMode(fadeTransition, durationInMillis , snowImage);
     }
     public static int getTimeOfRotation() {
         return timeOfRotation;
@@ -664,6 +735,11 @@ public class GameController {
         popupStage.initOwner(LoginMenu.stageOfProgram);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setScene(new Scene(pauseRoot, Color.TRANSPARENT));
+        setEventOfOkButton(button , popupStage);
+        popupStage.show();
+    }
+
+    private static void setEventOfOkButton(Button button , Stage popupStage) {
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -677,10 +753,6 @@ public class GameController {
                 }
             }
         });
-
-
-
-        popupStage.show();
     }
 
     public static void showState() throws Exception {
@@ -715,6 +787,21 @@ public class GameController {
         }
     }
 
+    private static void updateLabelNumberOfBalls(boolean releaseBall) {
+        if (releaseBall) {
+            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
+                    GameController.game.getNumberOfBalls();
+            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
+                    (balls - game.getBalls().size())));
+            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
+                    .size());
+            if (GameController.game.getBalls().size() <= 5) {
+                numberOfBallsText.setFill(Color.GREEN);
+            }
+            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
+        }
+    }
+
     public static void shoot2() throws Exception {
         boolean releaseBall = false;
         Ball firstBall = null;
@@ -731,20 +818,7 @@ public class GameController {
                 }
             }
         }
-        if (releaseBall) {
-            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
-                    GameController.game.getNumberOfBalls();
-            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
-                    (balls - game.getBalls().size())));
-            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
-                    .size());
-            if (GameController.game.getBalls().size() <= 5) {
-                numberOfBallsText.setFill(Color.GREEN);
-            }
-            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-            /*System.out.println("check collide in shoot 2");
-            checkCollide();*/
-        }
+        updateLabelNumberOfBalls(releaseBall);
     }
 
     private static void ballGoingToUp2(Ball ball, Ball firstBall) {
@@ -792,35 +866,7 @@ public class GameController {
                 }
             }
         }
-        if (releaseBall) {
-            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
-                    GameController.game.getNumberOfBalls();
-            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
-                    (balls - game.getBalls().size())));
-            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
-                    .size());
-            if (GameController.game.getBalls().size() <= 5) {
-                numberOfBallsText.setFill(Color.GREEN);
-            }
-            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-            if (!isPhase2 && (double) (balls - game.getBalls().size()) / balls
-                    >= 0.24) {
-                System.out.println("run");
-                GameController.runPhase2();
-                GameController.bigAndSmallBalls(1);
-            }
-            if (!isPhase3 && (double) (balls - game.getBalls().size()) / balls
-                    >= 0.49) {
-                isPhase3 = true;
-                numberOfBallsText.setFill(Color.YELLOW);
-                GameController.runPhase3();
-            }
-            if (!isPhase4 && (double) (balls - game.getBalls().size()) / balls
-                    >= 0.74) {
-                isPhase4 = true;
-                GameController.runPhase4();
-            }
-        }
+        phaseChecking(releaseBall);
     }
 
     private static void ballGoingToUp3(Ball ball, Ball firstBall) {
@@ -839,7 +885,6 @@ public class GameController {
             if (ball.equals(firstBall)) {
                 try {
                     isSecondPlayerPlaying = true;
-                    System.out.println("check end game in ball going 3");
                     checkEndgame(ball , firstBall);
                     isSecondPlayerPlaying = false;
                 } catch (Exception ex) {
@@ -865,21 +910,7 @@ public class GameController {
                 }
             }
         }
-        if (releaseBall) {
-            int balls = GameController.isDual ? GameController.game.getNumberOfBalls() * 2 :
-                    GameController.game.getNumberOfBalls();
-            GameMenu.scoreText.setText(String.format("score : %d", game.getDifficulty() *
-                    (balls - game.getBalls().size())));
-            GameMenu.numberOfBallsText.setText("number of balls : " + GameController.game.getBalls()
-                    .size());
-            if (GameController.game.getBalls().size() <= 5) {
-                numberOfBallsText.setFill(Color.GREEN);
-            }
-            progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-            /*System.out.println("check collide in shoot 4");
-            checkCollide();*/
-
-        }
+        updateLabelNumberOfBalls(releaseBall);
     }
 
     private static void ballGoingToUp4(Ball ball, Ball firstBall) {
