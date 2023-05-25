@@ -157,9 +157,9 @@ public class GameViewController {
         pauseRoot.setPadding(new Insets(20));
 
 
-        Button music1 = new Button("Sacrifise - The Weeknd");
-        Button music2 = new Button("Industry Baby - Lil Nas X");
-        Button music3 = new Button("Old Town Road - Lil Nas X");
+        Button music1 = new Button("Massif");
+        Button music2 = new Button("Last Stop");
+        Button music3 = new Button("Sky");
         Button okButton = new Button("OK");
 
         setHandleForChangeMusicButtons(music1 , 1);

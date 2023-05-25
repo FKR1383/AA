@@ -44,7 +44,7 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
 
     @Override
     protected void interpolate(double v) {
-        if (ball.getFill().equals(Color.GRAY)) {
+        if (ball.getFill().equals(Color.DIMGREY)) {
             ball.setTranslateX(ball.getTranslateX() - 3*Math.sin(Math.PI/180*angle));
             ball.setTranslateY(ball.getTranslateY() + 3*Math.cos(Math.PI/180*angle));
             ball.getText().setTranslateX(ball.getText().getTranslateX() - 3*Math.sin(Math.PI/180*angle));
@@ -77,7 +77,7 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
             double angle2 = Math.atan(Math.abs(x)/Math.abs(y));
             if (x < 0)
                 angle2 *= -1;
-            if (ball.getFill().equals(Color.GRAY)) {
+            if (ball.getFill().equals(Color.DIMGREY)) {
                 angle2 *= -1;
                 angle2 += Math.PI;
             }
@@ -92,6 +92,8 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
                 ball.getText().setTranslateY((double) 200 * Math.cos(Math.toRadians(angle) + angle2)); // 2.5
                 ball.getText().setRotate(-angle-angle2*180/Math.PI);
             Rod rod = new Rod();
+            if (ball.getFill().equals(Color.DIMGREY))
+                rod.setFill(Color.DIMGREY);
             Text text = (Text) game.getDiskWithNumber().getChildren().get
                     (game.getDiskWithNumber().getChildren().size() - 1);
             game.getDiskWithNumber().getChildren().remove

@@ -87,8 +87,7 @@ public class GameController {
         outerDisk.setRadius(200);
         GameController.setGame(game);
         game.setOuterDisk(outerDisk);
-        outerDisk.setFill(Color.GRAY);
-        outerDisk.setOpacity(0.5);
+        outerDisk.setOpacity(0);
         nowAngle = 0;
         game.setRotateTransition(rotateTransition);
         isIceMode = false;
@@ -171,8 +170,10 @@ public class GameController {
         rod.setTranslateY(Math.sin(angle) * 100);
         rod.setScaleY(200);
         rod.setRotate(angle*180/Math.PI-90);
-        disk.getChildren().add(ball);
+        rod.setFill(Color.DARKGRAY);
+        ball.setFill(Color.DARKGRAY);
         disk.getChildren().add(rod);
+        disk.getChildren().add(ball);
     }
 
     private static StackPane createDiskMap1() {
@@ -296,7 +297,7 @@ public class GameController {
                 ball.setNumber(i);
                 Text text = new Text(String.format("%d", i));
                 text.setFill(Color.WHITE);
-                ball.setFill(Color.GRAY);
+                ball.setFill(Color.DIMGREY);
                 ball.setText(text);
                 ball.setRadius(10);
                 balls.add(ball);
@@ -346,6 +347,7 @@ public class GameController {
         rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle)));
         rod.setScaleY(200);
         rod.setRotate(-angle);
+        rod.setFill(Color.DIMGREY);
         Text text = (Text) game.getDiskWithNumber().getChildren().get
                 (game.getDiskWithNumber().getChildren().size() - 1);
         game.getDiskWithNumber().getChildren().remove
@@ -368,7 +370,7 @@ public class GameController {
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            if (!ball.getFill().equals(Color.GRAY)) {
+            if (!ball.getFill().equals(Color.DIMGREY)) {
                 if (firstBall == null)
                     firstBall = ball;
                 ballGoingToUp(ball, firstBall);
@@ -696,7 +698,7 @@ public class GameController {
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            if (!ball.getFill().equals(Color.GRAY)) {
+            if (!ball.getFill().equals(Color.DIMGREY)) {
                 if (firstBall == null)
                     firstBall = ball;
                 releaseBall = true;
@@ -757,7 +759,7 @@ public class GameController {
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            if (ball.getFill().equals(Color.GRAY)) {
+            if (ball.getFill().equals(Color.DIMGREY)) {
                 if (firstBall == null)
                      firstBall = ball;
                 releaseBall = true;
@@ -830,7 +832,7 @@ public class GameController {
         Iterator itr = GameController.getGame().getBalls().iterator();
         while (itr.hasNext()) {
             Ball ball = (Ball) itr.next();
-            if (ball.getFill().equals(Color.GRAY)) {
+            if (ball.getFill().equals(Color.DIMGREY)) {
                 if (firstBall == null)
                     firstBall = ball;
                 releaseBall = true;
