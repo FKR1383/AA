@@ -33,6 +33,7 @@ public class TimerAnimation extends Transition {
                         GameController.game.setEnd(true);
                         GameController.game.setWin(false);
                         try {
+                            System.out.println("show state in timer down");
                             GameController.showState();
                         } catch (Exception e) {
                             throw new RuntimeException(e);

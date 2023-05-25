@@ -41,11 +41,6 @@ public class FadeOfBallsAnimation extends Transition {
                             ((Ball)o).getText().setOpacity(1);
                     }
                 }
-                try {
-                    GameController.showState();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
                 this.stop();
             } else {
                 new FadeOfBallsAnimation(-state);

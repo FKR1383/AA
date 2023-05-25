@@ -320,6 +320,7 @@ public class GameController {
             translateTransition.stop();
             if (ball.equals(firstBall)) {
                 try {
+                    System.out.println("check end game in ball going 1");
                     checkEndgame(ball , firstBall);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
@@ -357,10 +358,8 @@ public class GameController {
         game.getDiskWithNumber().getChildren().add(firstBall.getText());
         game.getDiskWithNumber().getChildren().add(disk);
         game.getDiskWithNumber().getChildren().add(text);
+        System.out.println("check collide in check end game");
         checkCollide();
-        if (game.isEnd()) {
-            GameController.showState();
-        }
     }
 
     public static void shoot() {
@@ -469,7 +468,7 @@ public class GameController {
                         o.getTranslateX() , o.getTranslateY() , ball.getRadius())) {
                     game.setEnd(true);
                     game.setWin(false);
-                    System.out.println("lose");
+                    System.out.println("Lose in check collide 2");
                     System.out.println("collide");
                     return true;
                 }
@@ -478,7 +477,7 @@ public class GameController {
         if (game.getBalls().size() == 0) {
             game.setEnd(true);
             game.setWin(true);
-            System.out.println("win");
+            System.out.println("Win in check collide 2");
             return true;
         }
         return false;
@@ -498,8 +497,7 @@ public class GameController {
                                 first.getRadius())) {
                             game.setEnd(true);
                             game.setWin(false);
-                            System.out.println("lose");
-                            System.out.println("collide");
+                            System.out.println("Lose in check collide");
                             showState();
                             return true;
                         }
@@ -510,7 +508,7 @@ public class GameController {
             if (game.getBalls().size() == 0) {
                 game.setEnd(true);
                 game.setWin(true);
-                System.out.println("win");
+                System.out.println("Win in check collide");
                 showState();
                 return false;
             }
@@ -536,7 +534,8 @@ public class GameController {
                     nowScore = secondUser.getScoreOfDiff().get(GameController.getDifficulty() - 1);
                     nowScore += game.getDifficulty() * (balls - game.getBalls().size());
                     secondUser.getScoreOfDiff().set(game.getDifficulty() - 1, nowScore);
-                    secondUser.getLastGames()[GameController.difficulty-1] = LocalDateTime.now().format(formatter);
+                    secondUser.getLastGames()[GameController.difficulty-1] =
+                            LocalDateTime.now().format(formatter);
                 }
             }
             DBController.saveCurrentUser();
@@ -718,10 +717,8 @@ public class GameController {
                 numberOfBallsText.setFill(Color.GREEN);
             }
             progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-            checkCollide();
-            if (game.isEnd()) {
-                GameController.showState();
-            }
+            /*System.out.println("check collide in shoot 2");
+            checkCollide();*/
         }
     }
 
@@ -817,6 +814,7 @@ public class GameController {
             if (ball.equals(firstBall)) {
                 try {
                     isSecondPlayerPlaying = true;
+                    System.out.println("check end game in ball going 3");
                     checkEndgame(ball , firstBall);
                     isSecondPlayerPlaying = false;
                 } catch (Exception ex) {
@@ -853,10 +851,9 @@ public class GameController {
                 numberOfBallsText.setFill(Color.GREEN);
             }
             progressBarField.setProgress(progressBarField.getProgress() + 0.1);
-            checkCollide();
-            if (game.isEnd()) {
-                GameController.showState();
-            }
+            /*System.out.println("check collide in shoot 4");
+            checkCollide();*/
+
         }
     }
 

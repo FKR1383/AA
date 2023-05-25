@@ -55,10 +55,11 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
             ball.getText().setTranslateX(ball.getText().getTranslateX() + 3*Math.sin(Math.PI/180*angle));
             ball.getText().setTranslateY(ball.getText().getTranslateY() - 3*Math.cos(Math.PI/180*angle));
         }
-        if (ball.getTranslateX() <= 25 || ball.getTranslateX() >= 425) {
+        if (ball.getTranslateX() <= 25 || ball.getTranslateX() >= 425 && !game.isEnd()) {
             GameController.getGame().setEnd(true);
             GameController.getGame().setWin(false);
             try {
+                System.out.println("show state in move of first divare");
                 GameController.showState();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -107,9 +108,8 @@ public class MoveOfFirstBallInWindAnimation extends Transition {
                 rod.setTranslateY((double) 100 * Math.cos(Math.toRadians(angle) + angle2));
                 rod.setScaleY(200);
                 rod.setRotate(-angle-angle2*180/Math.PI);
-            System.out.println("x : " + GameController.getGame().getOuterDisk().getTranslateX());
-            System.out.println("y : " + game.getOuterDisk().getTranslateY());
             try {
+                System.out.println("check collide in move of first of ball in collide (correct shoot)");
                 checkCollide();
             } catch (Exception e) {
                 throw new RuntimeException(e);

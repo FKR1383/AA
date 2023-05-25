@@ -15,8 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import model.User;
-import view.Animation.LoseGameAnimation;
-import view.Animation.WinGameAnimation;
+
 import view.Paths;
 
 import java.net.URL;
@@ -27,8 +26,6 @@ public class MainMenu extends Application {
     public void start(Stage stage) throws Exception {
         URL mainMenuFXMLUrl = MainMenu.class.getResource(Paths.MAIN_MENU_FXML_FILE.getPath());
         BorderPane borderPane = FXMLLoader.load(mainMenuFXMLUrl);
-        WinGameAnimation.setDone(false);
-        LoseGameAnimation.setIsDone(false);
         if (GameViewController.isBlackWhiteThemeOn) {
             borderPane.getStylesheets().remove(getClass().getResource(
                     Paths.COMMON_STYLES_FILE_PATH.getPath()).toExternalForm());
